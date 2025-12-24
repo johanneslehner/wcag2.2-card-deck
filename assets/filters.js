@@ -1,528 +1,604 @@
-// assets/filters.js
-// Filter UI and logic for WCAG 2.2 Card Deck
+/**
+ * WCAG 2.2 Card Deck - Filters Module
+ * 
+ * Handles filter UI interactions, state management,
+ * and card filtering logic.
+ * 
+ * @module filters
+ */
 
+// =============================================================================
+// CONSTANTS
+// =============================================================================
+
+const STORAGE_KEY = 'wcag-filters';
+
+const FILTER_NAMES = {
+  WCAG_VERSION: 'wcagVersion',
+  PRINCIPLE: 'principle',
+  GUIDELINE: 'guideline',
+  LEVEL: 'level',
+  THEME: 'theme',
+  ROLE: 'role',
+  DISABILITIES: 'disabilities'
+};
+
+// =============================================================================
+// DOM UTILITIES
+// =============================================================================
+
+/**
+ * Gets all checked values for a checkbox group
+ * @param {string} name - The checkbox group name attribute
+ * @returns {string[]} Array of checked values
+ */
+function getCheckedValues(name) {
+  return Array.from(
+    document.querySelectorAll(`input[name="${name}"]:checked`)
+  ).map(cb => cb.value);
+}
+
+/**
+ * Sets checkbox states from an array of values
+ * @param {string} name - The checkbox group name attribute
+ * @param {string[]} values - Values to check
+ */
+function setCheckedValues(name, values) {
+  document.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
+    cb.checked = values.includes(cb.value);
+  });
+}
+
+/**
+ * Gets a single element value
+ * @param {string} id - Element ID
+ * @param {string} defaultValue - Default value if element not found
+ * @returns {string} Element value or default
+ */
+function getElementValue(id, defaultValue = '') {
+  return document.getElementById(id)?.value ?? defaultValue;
+}
+
+/**
+ * Sets an element value
+ * @param {string} id - Element ID
+ * @param {string} value - Value to set
+ */
+function setElementValue(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.value = value;
+}
+
+// =============================================================================
+// TRANSLATION UTILITIES
+// =============================================================================
+
+/**
+ * Builds a translation map from raw translations data
+ * @param {Object} translations - Raw translations object
+ * @returns {Object} Structured translation map
+ */
+function buildTranslationMap(translations) {
+  return {
+    level: translations.level || {},
+    theme: translations.theme || {},
+    responsibility: translations.responsibility || {},
+    disability: translations.disability || {},
+    principle: translations.strings?.principle || 'Principle',
+    filterCategories: translations.strings?.filterCategories || {
+      level: 'Level',
+      theme: 'Theme',
+      responsibility: 'Role',
+      disability: 'Disabilities',
+      principles: 'Principles & Guidelines'
+    },
+    wcagVersion: {
+      label: 'WCAG Version',
+      options: {
+        '2.2': 'WCAG 2.2',
+        '2.1': 'WCAG 2.1',
+        '2.0': 'WCAG 2.0'
+      }
+    },
+    obsolete: translations.strings?.obsolete || 'Show obsolete criteria',
+    resetFilters: translations.strings?.resetFilters || 'Reset filter'
+  };
+}
+
+/**
+ * Applies translations to filter labels
+ * @param {string} selector - CSS selector for labels
+ * @param {string} dataAttr - Data attribute containing the key
+ * @param {Object} translationObj - Translation object
+ * @param {Function} formatter - Optional formatter function
+ */
+function applyTranslations(selector, dataAttr, translationObj, formatter = null) {
+  if (!translationObj) return;
+  
+  document.querySelectorAll(selector).forEach(element => {
+    const key = element.getAttribute(dataAttr);
+    if (!key) return;
+    
+    let value = translationObj[key];
+    
+    // Handle nested objects (e.g., level.A.short)
+    if (value?.short) {
+      value = value.short;
+    }
+    
+    if (value) {
+      element.textContent = formatter ? formatter(value, key) : value;
+    }
+  });
+}
+
+// =============================================================================
+// STATE MANAGEMENT
+// =============================================================================
+
+/**
+ * Gets current filter selections
+ * @returns {Object} Current filter state
+ */
+function getFilterState() {
+  return {
+    wcagVersion: getElementValue('wcagVersion-select', '2.2'),
+    showObsolete: document.getElementById('show-obsolete')?.checked ?? false,
+    principle: getCheckedValues(FILTER_NAMES.PRINCIPLE),
+    guideline: getCheckedValues(FILTER_NAMES.GUIDELINE),
+    level: getCheckedValues(FILTER_NAMES.LEVEL),
+    theme: getCheckedValues(FILTER_NAMES.THEME),
+    role: getCheckedValues(FILTER_NAMES.ROLE),
+    disabilities: getCheckedValues(FILTER_NAMES.DISABILITIES),
+    searchQuery: getElementValue('search-bar', '').trim().toLowerCase()
+  };
+}
+
+/**
+ * Restores filter state from saved state
+ * @param {Object} state - Saved filter state
+ */
+function restoreFilterState(state) {
+  if (!state) return;
+  
+  setElementValue('wcagVersion-select', state.wcagVersion);
+  
+  if (state.showObsolete !== undefined) {
+    const checkbox = document.getElementById('show-obsolete');
+    if (checkbox) checkbox.checked = state.showObsolete;
+  }
+  
+  Object.entries(FILTER_NAMES).forEach(([, name]) => {
+    if (state[name]) {
+      setCheckedValues(name, state[name]);
+    }
+  });
+}
+
+/**
+ * Saves filter state to localStorage
+ * @param {Object} state - Filter state to save
+ */
+function saveFilterState(state) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Storage might be full or disabled
+  }
+}
+
+/**
+ * Loads saved filter state from localStorage
+ * @returns {Object|null} Saved state or null
+ */
+function loadSavedFilterState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+}
+
+// =============================================================================
+// PRINCIPLE/GUIDELINE MANAGEMENT
+// =============================================================================
+
+/**
+ * Updates principle checkbox states based on guideline selections
+ * Implements tri-state logic (all/some/none selected)
+ */
+function updatePrincipleStates() {
+  document.querySelectorAll('input[name="principle"]').forEach(principleCb => {
+    if (principleCb._skipUpdate) {
+      principleCb._skipUpdate = false;
+      return;
+    }
+    
+    const principleNum = principleCb.value;
+    const guidelines = Array.from(
+      document.querySelectorAll(`input[name="guideline"][id^="guideline-${principleNum}."]`)
+    );
+    
+    if (guidelines.length === 0) return;
+    
+    const checkedCount = guidelines.filter(cb => cb.checked).length;
+    
+    if (checkedCount === 0) {
+      principleCb.checked = false;
+      principleCb.indeterminate = false;
+    } else if (checkedCount === guidelines.length) {
+      principleCb.checked = true;
+      principleCb.indeterminate = false;
+    } else {
+      principleCb.checked = false;
+      principleCb.indeterminate = true;
+    }
+  });
+}
+
+/**
+ * Toggles all guidelines for a principle
+ * @param {string} principleNum - Principle number
+ * @param {boolean} checked - Whether to check or uncheck
+ */
+function togglePrincipleGuidelines(principleNum, checked) {
+  document.querySelectorAll(`input[name="guideline"][id^="guideline-${principleNum}."]`)
+    .forEach(cb => { cb.checked = checked; });
+}
+
+// =============================================================================
+// FILTERING LOGIC
+// =============================================================================
+
+/**
+ * Enriches relation data with computed properties
+ * @param {Object} relations - Relations data object
+ * @returns {Object} Enriched relations
+ */
+function enrichRelations(relations) {
+  const enriched = { ...relations };
+  
+  Object.entries(enriched).forEach(([num, card]) => {
+    const parts = num.split('.');
+    card.principle = parts[0];
+    card.guideline = parts.slice(0, 2).join('.');
+  });
+  
+  return enriched;
+}
+
+/**
+ * Filters cards based on current filter state
+ * @param {Object} relations - Enriched relations data
+ * @param {Object} state - Current filter state
+ * @param {Object} translations - Translations for search
+ * @param {Object} criteria - Criteria data for search
+ * @returns {Array} Filtered entries as [num, card] pairs
+ */
+function filterCards(relations, state, translations, criteria) {
+  return Object.entries(relations).filter(([num, card]) => {
+    // WCAG Version filter
+    if (card.wcagVersion) {
+      if (state.wcagVersion === '2.0' && card.wcagVersion !== '2.0') return false;
+      if (state.wcagVersion === '2.1' && card.wcagVersion === '2.2') return false;
+    }
+    
+    // Obsolete filter (only for WCAG 2.2)
+    if (state.wcagVersion === '2.2' && !state.showObsolete && card.obsolete) {
+      return false;
+    }
+    
+    // Guideline filter
+    if (state.guideline.length && !state.guideline.includes(card.guideline)) {
+      return false;
+    }
+    
+    // Level filter
+    if (state.level.length && !state.level.includes(card.level)) {
+      return false;
+    }
+    
+    // Theme filter (any match)
+    if (state.theme.length && !state.theme.some(t => card.themes?.includes(t))) {
+      return false;
+    }
+    
+    // Role filter (any match)
+    if (state.role.length && !state.role.some(r => card.responsibilities?.includes(r))) {
+      return false;
+    }
+    
+    // Disabilities filter (any match)
+    if (state.disabilities.length && !state.disabilities.some(d => card.disabilities?.includes(d))) {
+      return false;
+    }
+    
+    // Text search
+    if (state.searchQuery) {
+      const t = translations[num] || {};
+      const c = criteria[num] || {};
+      
+      const searchableFields = [
+        num,
+        t.title || c.title || '',
+        t.description || c.description || '',
+        t.url || '',
+        ...(card.themes || []),
+        ...(card.responsibilities || []),
+        ...(card.disabilities || [])
+      ];
+      
+      const matches = searchableFields.some(
+        field => field?.toLowerCase().includes(state.searchQuery)
+      );
+      
+      if (!matches) return false;
+    }
+    
+    return true;
+  });
+}
+
+/**
+ * Updates the obsolete checkbox enabled/disabled state
+ * @param {string} wcagVersion - Selected WCAG version
+ */
+function updateObsoleteCheckbox(wcagVersion) {
+  const checkbox = document.getElementById('show-obsolete');
+  if (!checkbox) return;
+  
+  const isEnabled = wcagVersion === '2.2';
+  checkbox.disabled = !isEnabled;
+  checkbox.parentElement?.classList.toggle('disabled', !isEnabled);
+}
+
+/**
+ * Updates the helper info display
+ * @param {number} filteredCount - Number of filtered results
+ * @param {number} totalCount - Total number of cards
+ */
+function updateHelperInfo(filteredCount, totalCount) {
+  const helperInfo = document.getElementById('helper-info');
+  if (helperInfo) {
+    helperInfo.textContent = `${filteredCount} / ${totalCount} success criteria found`;
+  }
+}
+
+/**
+ * Displays the no results message
+ * @param {Function} onClear - Callback when clear button is clicked
+ */
+function showNoResults(onClear) {
+  const container = document.getElementById('cards-overview');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div class="no-results-message">
+      <p>No success criterion found.<br>Try a different wording or reset the filter/search.</p>
+      <button id="clear-search-btn">Clear search</button>
+    </div>
+  `;
+  
+  document.getElementById('clear-search-btn')?.addEventListener('click', onClear);
+}
+
+// =============================================================================
+// MAIN SETUP FUNCTION
+// =============================================================================
+
+/**
+ * Sets up the filter system
+ * @param {Object} config - Configuration object
+ * @param {Object} config.relations - Relations data
+ * @param {Object} config.translations - Translations data
+ * @param {Object} config.criteria - Criteria data
+ * @param {Object} config.principles - Principles data
+ * @param {Function} config.renderCards - Card rendering function
+ */
 export function setupFilters({ relations, translations, criteria, principles, renderCards }) {
-    console.log('Setting up filters with data:', {
-        relationsEmpty: !relations || Object.keys(relations).length === 0,
-        translationsEmpty: !translations || Object.keys(translations).length === 0,
-        criteriaEmpty: !criteria || Object.keys(criteria).length === 0,
-        principlesEmpty: !principles || Object.keys(principles).length === 0
-    });
+  // Validate required data
+  if (!relations || !translations || !criteria || !principles) {
+    console.error('Missing required data for filters');
+    document.getElementById('cards-overview').innerHTML = 
+      '<div class="no-results-message">Error: Required data could not be loaded.</div>';
+    return;
+  }
+  
+  // Build translation map and enrich relations
+  const translationMap = buildTranslationMap(translations);
+  const enrichedRelations = enrichRelations(relations);
+  
+  // Apply translations to UI elements
+  applyFilterTranslations(translationMap, principles);
+  
+  // Setup event listeners
+  setupEventListeners(update, reset);
+  
+  // Restore saved state
+  const savedState = loadSavedFilterState();
+  if (savedState) {
+    restoreFilterState(savedState);
+  }
+  
+  // Initial render
+  updatePrincipleStates();
+  update();
+  
+  // =========================================================================
+  // INTERNAL FUNCTIONS
+  // =========================================================================
+  
+  /**
+   * Main update function - filters and renders cards
+   */
+  function update() {
+    const state = getFilterState();
     
-    // If we're missing required data, display an error and exit
-    if (!relations || Object.keys(relations).length === 0 || 
-        !translations || Object.keys(translations).length === 0 ||
-        !criteria || Object.keys(criteria).length === 0 ||
-        !principles || Object.keys(principles).length === 0) {
-        
-        console.error('Missing required data to setup filters and render cards');
-        document.getElementById('cards-overview').innerHTML = 
-            `<div class="no-results-message">Error: Some required data files could not be loaded. Please check the console for details.</div>`;
-        return;
-    }
+    updateObsoleteCheckbox(state.wcagVersion);
+    updatePrincipleStates();
     
-    // Utility functions
-
-    function getCheckedValues(name) {
-        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
-    }
-
-    function getCheckedGuidelines() {
-        return Array.from(document.querySelectorAll('input[name="guideline"]:checked')).map(cb => cb.value);
-    }
-
-    // Build translation maps for filter values
-    const translationMap = {
-        level: translations.level || {},
-        theme: translations.theme || {},
-        responsibility: translations.responsibility || {},
-        disability: translations.disability || {},
-        principle: translations.strings?.principle || 'Principle',
-        filterCategories: translations.strings?.filterCategories || {
-            level: 'Level',
-            theme: 'Theme',
-            responsibility: 'Role',
-            disability: 'Disabilities',
-            principles: 'Principles & Guidelines'
-        },
-        wcagVersion: {
-            label: 'WCAG Version',
-            options: {
-                '2.2': 'WCAG 2.2',
-                '2.1': 'WCAG 2.1',
-                '2.0': 'WCAG 2.0'
-            }
-        },
-        obsolete: translations.strings?.obsolete || 'Show obsolete criteria',
-        resetFilters: translations.strings?.resetFilters || 'Reset filter'
-    };
-
-    // No need to gather unique filter values since filters are now static in HTML
-
-    // Create filter UI
-    const filterArea = document.getElementById('filter-area');
-
-    // Helper to create collapsible filter group
-    function createCollapsibleFilterGroup(label, contentElem, groupId, categoryKey = null) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'filter-collapsible-group';
-        wrapper.style.marginBottom = '1.5em';
-        
-        const header = document.createElement('button');
-        header.className = 'filter-group-header';
-        header.type = 'button';
-        header.setAttribute('aria-expanded', 'true');
-        header.setAttribute('aria-controls', groupId);
-        
-        // Set the text content directly or use translation if categoryKey is provided
-        if (categoryKey && translationMap.filterCategories && translationMap.filterCategories[categoryKey]) {
-            header.textContent = translationMap.filterCategories[categoryKey];
-            header.setAttribute('data-filter-category', categoryKey);
-        } else {
-            header.textContent = label;
-        }
-        
-        header.onclick = function() {
-            const expanded = header.getAttribute('aria-expanded') === 'true';
-            header.setAttribute('aria-expanded', String(!expanded));
-            contentElem.style.display = expanded ? 'none' : '';
-        };
-        
-        contentElem.id = groupId;
-        wrapper.appendChild(header);
-        wrapper.appendChild(contentElem);
-        return wrapper;
-    }
-
-    // Set up event listeners for the static filter controls
+    const filtered = filterCards(enrichedRelations, state, translations, criteria);
     
-    // WCAG Version dropdown
-    document.getElementById('wcagVersion-select')?.addEventListener('change', update);
+    updateHelperInfo(filtered.length, Object.keys(relations).length);
     
-    // Show/hide obsolete checkbox
-    document.getElementById('show-obsolete')?.addEventListener('change', update);
-    
-    // Reset filter button
-    document.getElementById('reset-filter-btn')?.addEventListener('click', function() {
-        document.querySelectorAll('#filter-area input[type="checkbox"]').forEach(cb => { 
-            // Skip the obsolete checkbox as we handle it separately
-            if (cb.id !== 'show-obsolete') {
-                cb.checked = true;
-                cb.disabled = false;
-            }
-        });
-        
-        if (document.getElementById('search-bar')) document.getElementById('search-bar').value = '';
-        
-        // Reset obsolete checkbox
-        const obsoleteCheckbox = document.getElementById('show-obsolete');
-        if (obsoleteCheckbox) {
-            obsoleteCheckbox.checked = false;
-            // Enable it since we're resetting to WCAG 2.2
-            obsoleteCheckbox.disabled = false;
-            obsoleteCheckbox.parentElement.classList.remove('disabled');
-        }
-        
-        // Reset WCAG version dropdown to "2.2" (All)
-        if (document.getElementById('wcagVersion-select')) {
-            document.getElementById('wcagVersion-select').value = '2.2';
-        }
-        
+    if (filtered.length === 0) {
+      showNoResults(() => {
+        setElementValue('search-bar', '');
         update();
-    });
-
-    // Set up event handlers for the static Principles & Guidelines filter section
-    // Add toggle functionality to the principle toggle buttons
-    document.querySelectorAll('.principle-toggle-header').forEach(toggleBtn => {
-        toggleBtn.addEventListener('click', function() {
-            const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
-            toggleBtn.setAttribute('aria-expanded', String(!expanded));
-            const controlId = toggleBtn.getAttribute('aria-controls');
-            const guidelineList = document.getElementById(controlId);
-            if (guidelineList) {
-                guidelineList.style.display = expanded ? 'none' : '';
-            }
-            toggleBtn.innerHTML = expanded ? '&#9654;' : '&#9660;'; // right/down arrow
-        });
-    });
-    
-    // Add change handlers for guideline checkboxes to update principle states
-    document.querySelectorAll('input[name="guideline"]').forEach(guidelineCb => {
-        guidelineCb.addEventListener('change', function() {
-            // Immediately update the related principle checkbox state
-            updatePrincipleCheckboxStates();
-        });
-    });
-
-    // Other filters (collapsible)
-    // All filters are now static in HTML, so we just need to update translations and add collapsible behavior
-    
-    // Generic function to update element text content using translations
-    function updateTranslation(element, translationObj, key, formatter = null) {
-        if (!element || !translationObj || !key) return;
-        
-        let translatedText = null;
-        
-        // Handle nested objects (like level.A.short)
-        if (key.includes('.')) {
-            const keys = key.split('.');
-            let currentObj = translationObj;
-            for (const k of keys) {
-                if (!currentObj || !currentObj[k]) return;
-                currentObj = currentObj[k];
-            }
-            translatedText = currentObj;
-        } 
-        // Handle direct lookup
-        else if (translationObj[key]) {
-            translatedText = translationObj[key];
-        }
-        
-        // Apply formatter if provided
-        if (translatedText && formatter) {
-            translatedText = formatter(translatedText, key);
-        }
-        
-        // Update element if translation found
-        if (translatedText) {
-            element.textContent = translatedText;
-        }
+      });
+    } else {
+      renderCards(filtered, translations, criteria, translationMap, principles);
     }
     
-    // Generic function to update filter labels with translations based on data attributes
-    function updateFilterLabels(selector, dataAttribute, translationKey, formatter = null) {
-        document.querySelectorAll(selector).forEach(label => {
-            const value = label.getAttribute(dataAttribute);
-            const translations = translationMap[translationKey];
-            
-            if (value && translations) {
-                // Handle special case for level which has nested short/full structure
-                if (translationKey === 'level' && translations[value]?.short) {
-                    updateTranslation(label, translations[value], 'short');
-                } else {
-                    updateTranslation(label, translations, value, formatter);
-                }
-            }
-        });
-    }
-    
-    // Apply translations to all filter types
-    updateFilterLabels('.level-label', 'data-level', 'level');
-    updateFilterLabels('.theme-label', 'data-theme', 'theme');
-    updateFilterLabels('.role-label', 'data-role', 'responsibility');
-    updateFilterLabels('.disability-label', 'data-disability', 'disability');
-    
-    // Update filter category headers with translations
-    updateFilterLabels('.filter-category-header', 'data-filter-category', 'filterCategories');
-    
-    // Update principle titles with translations (including numbers) from principles object
-    document.querySelectorAll('.principle-inline-title').forEach(title => {
-        const principleValue = title.getAttribute('data-principle');
-        if (principleValue && principles[principleValue]) {
-            title.textContent = principleValue + '. ' + principles[principleValue].title;
-        }
+    saveFilterState(state);
+  }
+  
+  /**
+   * Resets all filters to default state
+   */
+  function reset() {
+    // Check all filter checkboxes
+    document.querySelectorAll('#filter-area input[type="checkbox"]').forEach(cb => {
+      if (cb.id !== 'show-obsolete') {
+        cb.checked = true;
+        cb.disabled = false;
+      }
     });
     
-    // Update guideline labels with translations (including numbers) from principles object
-    document.querySelectorAll('.guideline-label').forEach(label => {
-        const guidelineValue = label.getAttribute('data-guideline');
-        if (guidelineValue && principles[guidelineValue]) {
-            label.textContent = guidelineValue + ' ' + principles[guidelineValue].title;
-        }
-    });
-    
-    // Update WCAG version dropdown with translations
-    const wcagVersionLabel = document.querySelector('label[for="wcagVersion-select"] strong');
-    if (wcagVersionLabel) {
-        updateTranslation(wcagVersionLabel, translationMap.wcagVersion, 'label', 
-            (translated) => `${translated}:`);
+    // Reset obsolete checkbox
+    const obsoleteCheckbox = document.getElementById('show-obsolete');
+    if (obsoleteCheckbox) {
+      obsoleteCheckbox.checked = false;
+      obsoleteCheckbox.disabled = false;
+      obsoleteCheckbox.parentElement?.classList.remove('disabled');
     }
     
-    document.querySelectorAll('#wcagVersion-select option').forEach(option => {
-        const version = option.value;
-        if (version) {
-            updateTranslation(option, translationMap.wcagVersion?.options, version);
-        }
-    });
+    // Reset WCAG version
+    setElementValue('wcagVersion-select', '2.2');
     
-    // Helper function for translating text nodes
-    function updateTextNodeTranslation(element, translationKey, prefix = '') {
-        if (!element || !translationMap[translationKey]) return;
-        
-        const textNode = Array.from(element.childNodes)
-            .find(node => node.nodeType === Node.TEXT_NODE);
-            
-        if (textNode) {
-            textNode.nodeValue = prefix + translationMap[translationKey];
-        }
-    }
+    // Clear search
+    setElementValue('search-bar', '');
     
-    // Update obsolete checkbox label
-    const obsoleteLabel = document.querySelector('label[for="show-obsolete"]');
-    if (!obsoleteLabel) {
-        const obsoleteCheckbox = document.getElementById('show-obsolete');
-        if (obsoleteCheckbox && obsoleteCheckbox.parentNode.tagName === 'LABEL') {
-            updateTextNodeTranslation(obsoleteCheckbox.parentNode, 'obsolete', ' ');
-        }
-    }
-    
-    // Update reset filter button
-    const resetBtn = document.getElementById('reset-filter-btn');
-    if (resetBtn) {
-        updateTranslation(resetBtn, translationMap, 'resetFilters');
-    }
-    
-    // Add collapsible behavior to all filter headers
-    document.querySelectorAll('.filter-collapsible-group .filter-group-header').forEach(header => {
-        // Update translation for header if it has a data attribute
-        const category = header.getAttribute('data-filter-category');
-        if (category) {
-            updateTranslation(header, translationMap.filterCategories, category);
-        }
-        
-        header.onclick = function() {
-            const expanded = this.getAttribute('aria-expanded') === 'true';
-            this.setAttribute('aria-expanded', !expanded);
-            const controlId = this.getAttribute('aria-controls');
-            const content = document.getElementById(controlId);
-            if (content) {
-                content.style.display = expanded ? 'none' : 'block';
-            }
-        };
-    });
-
-    // Full text search
-    // Remove search input from filter area; use top search bar instead
-
-
-    // Tri-state logic for principles
-    function updatePrincipleCheckboxStates() {
-        // Get all principle checkboxes
-        document.querySelectorAll('input[name="principle"]').forEach(principleCb => {
-            const principleNum = principleCb.value;
-            // Find all guideline checkboxes for this principle
-            const guidelineSelector = `input[name="guideline"][id^="guideline-${principleNum}."]`;
-            const guidelineCbs = Array.from(document.querySelectorAll(guidelineSelector));
-            
-            if (guidelineCbs.length === 0) return;
-            
-            // Skip this update if the principle checkbox was directly changed by user
-            if (principleCb._ignoreNextUpdate) {
-                principleCb._ignoreNextUpdate = false;
-                return;
-            }
-            
-            const checkedCount = guidelineCbs.filter(cb => cb.checked).length;
-            if (checkedCount === 0) {
-                principleCb.checked = false;
-                principleCb.indeterminate = false;
-            } else if (checkedCount === guidelineCbs.length) {
-                principleCb.checked = true;
-                principleCb.indeterminate = false;
-            } else {
-                principleCb.checked = false;
-                principleCb.indeterminate = true;
-            }
-        });
-    }
-
-    // Helper: enable/disable guideline checkboxes based on selected principles
-    function updateGuidelineCheckboxes(selectedPrinciples, prevPrinciples) {
-        // No need to disable any checkboxes in the static HTML implementation
-        updatePrincipleCheckboxStates();
-    }
-
-    // Principle checkbox click handler for tri-state logic
-    document.querySelectorAll('input[name="principle"]').forEach(principleCb => {
-        principleCb.addEventListener('change', function(e) {
-            // Prevent the default checkbox behavior temporarily
-            e.stopPropagation();
-            
-            const principleNum = principleCb.value;
-            // Find all guideline checkboxes for this principle
-            const guidelineSelector = `input[name="guideline"][id^="guideline-${principleNum}."]`;
-            const guidelineCbs = Array.from(document.querySelectorAll(guidelineSelector));
-            
-            if (guidelineCbs.length === 0) return;
-            
-            // Check if the principle checkbox is checked and set all guidelines accordingly
-            const isChecked = principleCb.checked;
-            guidelineCbs.forEach(cb => {
-                cb.checked = isChecked;
-            });
-            
-            // Trigger update
-            setTimeout(() => {
-                update();
-            }, 0);
-        });
-    });
-
-    // Store and restore filter selections
-    function getFilterSelections() {
-        return {
-            wcagVersion: document.getElementById('wcagVersion-select')?.value || '2.2',
-            principle: getCheckedValues('principle'),
-            guideline: getCheckedGuidelines(),
-            level: getCheckedValues('level'),
-            theme: getCheckedValues('theme'),
-            role: getCheckedValues('role'),
-            disabilities: getCheckedValues('disabilities')
-        };
-    }
-    function setFilterSelections(selections) {
-        if (!selections) return;
-        
-        // Handle WCAG version dropdown
-        if (selections.wcagVersion && document.getElementById('wcagVersion-select')) {
-            document.getElementById('wcagVersion-select').value = selections.wcagVersion;
-        }
-        
-        // Handle checkbox filters
-        ['principle','guideline','level','theme','role','disabilities'].forEach(name => {
-            const values = selections[name] || [];
-            document.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
-                cb.checked = values.includes(cb.value);
-            });
-        });
-    }
-
-    let lastSelections = null;
-
-    function update() {
-        const filters = getFilterSelections();
-        Object.entries(relations).forEach(([num, card]) => {
-            card.principle = num.split('.')[0];
-            card.guideline = num.split('.').slice(0,2).join('.');
-        });
-        updateGuidelineCheckboxes(filters.principle);
-        lastSelections = filters;
-        const showObsolete = document.getElementById('show-obsolete')?.checked;
-        
-        // Get selected WCAG version
-        const selectedWcagVersion = document.getElementById('wcagVersion-select')?.value || '2.2';
-        
-        // Enable/disable obsolete checkbox based on WCAG version
-        // The obsolete filter is only relevant for WCAG 2.2
-        const obsoleteCheckbox = document.getElementById('show-obsolete');
-        if (obsoleteCheckbox) {
-            if (selectedWcagVersion === '2.2') {
-                obsoleteCheckbox.disabled = false;
-                obsoleteCheckbox.parentElement.classList.remove('disabled');
-            } else {
-                obsoleteCheckbox.disabled = true;
-                obsoleteCheckbox.parentElement.classList.add('disabled');
-            }
-        }
-        
-        let filtered = Object.entries(relations).filter(([num, card]) => {
-            // Filter by WCAG version
-            if (card.wcagVersion) {
-                // If 2.0 is selected, only show 2.0 items
-                if (selectedWcagVersion === '2.0' && card.wcagVersion !== '2.0') return false;
-                
-                // If 2.1 is selected, show 2.0 and 2.1 items but not 2.2
-                if (selectedWcagVersion === '2.1' && card.wcagVersion === '2.2') return false;
-                
-                // If 2.2 is selected, show all items (no filtering)
-            }
-            
-            // Continue with other filters
-            if (filters.guideline.length && (!card.guideline || !filters.guideline.includes(card.guideline))) return false;
-            if (filters.level.length && (!card.level || !filters.level.includes(card.level))) return false;
-            if (filters.theme.length && (!card.themes || !filters.theme.some(t => card.themes.includes(t)))) return false;
-            if (filters.role.length && (!card.responsibilities || !filters.role.some(r => card.responsibilities.includes(r)))) return false;
-            if (filters.disabilities.length && (!card.disabilities || !filters.disabilities.some(d => card.disabilities.includes(d)))) return false;
-            
-            // Only apply the obsolete filter for WCAG 2.2
-            // Obsolete criteria only exist in WCAG 2.2 where criteria from 2.0/2.1 may be marked as obsolete
-            if (selectedWcagVersion === '2.2' && !showObsolete && card.obsolete) return false;
-            return true;
-        });
-        // Use top search bar value for filtering
-        const searchValue = (document.getElementById('search-bar')?.value || '').trim().toLowerCase();
-        if (searchValue) {
-            filtered = filtered.filter(([num, card]) => {
-                    // Always include criteria even if translation is missing
-                    const t = translations[num] || {};
-                    const c = criteria[num] || {};
-                    const fields = [
-                        num,
-                        t.title || c.title || '',
-                        t.description || c.description || '',
-                        t.url || '',
-                        (card.themes || []).join(' '),
-                        (card.responsibilities || []).join(' '),
-                        (card.disabilities || []).join(' ')
-                    ];
-                    return fields.some(f => f && f.toLowerCase().includes(searchValue));
-            });
-        }
-        // Update helper info
-        const helperInfo = document.getElementById('helper-info');
-        if (helperInfo) {
-                const totalCount = Object.keys(relations).length;
-                helperInfo.textContent = `${filtered.length} / ${totalCount} success criteria found`;
-        }
-        if (filtered.length === 0) {
-            const container = document.getElementById('cards-overview');
-            container.innerHTML = `<div class="no-results-message">
-                <p>No success criterion found.<br>Try a different wording or reset the filter/search.</p>
-                <button id="clear-search-btn">Clear search</button>
-            </div>`;
-            document.getElementById('clear-search-btn').onclick = function() {
-                if (document.getElementById('search-input')) document.getElementById('search-input').value = '';
-                update();
-            };
-        } else {
-            renderCards(filtered, translations, criteria, translationMap, principles);
-        }
-        localStorage.setItem('wcag-filters', JSON.stringify(lastSelections));
-        setTimeout(() => {
-            if (document.getElementById('search-input')) {
-                document.getElementById('search-input').addEventListener('input', update);
-            }
-        }, 0);
-    }
-
-    filterArea.addEventListener('change', function(e) {
-        // Only update principle visual state if a guideline was changed
-        if (e.target && e.target.name === 'guideline') {
-            updatePrincipleCheckboxStates();
-        } else if (e.target && e.target.name === 'principle') {
-            // Mark this principle checkbox to be ignored in the next updatePrincipleCheckboxStates
-            e.target._ignoreNextUpdate = true;
-        }
-        update();
-    });
-
-    Object.entries(relations).forEach(([num, card]) => {
-        card.principle = num.split('.')[0];
-        card.guideline = num.split('.').slice(0,2).join('.');
-    });
-    let storedSelections = null;
-    try {
-        storedSelections = JSON.parse(localStorage.getItem('wcag-filters'));
-    } catch(e) {}
-    if (storedSelections) {
-        setFilterSelections(storedSelections);
-    }
-    updatePrincipleCheckboxStates();
     update();
+  }
+}
 
-    // Listen to top search bar for filtering
-    const topSearchInput = document.getElementById('search-bar');
-    const topClearBtn = document.getElementById('search-clear-btn');
-    if (topSearchInput) {
-        topSearchInput.addEventListener('input', () => {
-            update();
-            topClearBtn.style.display = topSearchInput.value ? '' : 'none';
-        });
-        topClearBtn.addEventListener('click', () => {
-            topSearchInput.value = '';
-            topClearBtn.style.display = 'none';
-            update();
-        });
-        topClearBtn.style.display = topSearchInput.value ? '' : 'none';
+// =============================================================================
+// TRANSLATION APPLICATION
+// =============================================================================
+
+/**
+ * Applies all translations to filter UI elements
+ * @param {Object} translationMap - Translation map object
+ * @param {Object} principles - Principles data
+ */
+function applyFilterTranslations(translationMap, principles) {
+  // Filter chip labels
+  applyTranslations('.level-label', 'data-level', translationMap.level);
+  applyTranslations('.theme-label', 'data-theme', translationMap.theme);
+  applyTranslations('.role-label', 'data-role', translationMap.responsibility);
+  applyTranslations('.disability-label', 'data-disability', translationMap.disability);
+  applyTranslations('.filter-category-header', 'data-filter-category', translationMap.filterCategories);
+  
+  // Guideline labels with principle data
+  document.querySelectorAll('.guideline-label').forEach(label => {
+    const guideline = label.getAttribute('data-guideline');
+    if (guideline && principles[guideline]) {
+      label.textContent = `${guideline} ${principles[guideline].title}`;
     }
+  });
+  
+  // Reset button
+  const resetBtn = document.getElementById('reset-filter-btn');
+  if (resetBtn) {
+    resetBtn.textContent = translationMap.resetFilters;
+  }
+}
+
+// =============================================================================
+// EVENT LISTENER SETUP
+// =============================================================================
+
+/**
+ * Sets up all event listeners for the filter system
+ * @param {Function} onUpdate - Update callback
+ * @param {Function} onReset - Reset callback
+ */
+function setupEventListeners(onUpdate, onReset) {
+  const filterArea = document.getElementById('filter-area');
+  
+  // WCAG Version dropdown
+  document.getElementById('wcagVersion-select')?.addEventListener('change', onUpdate);
+  
+  // Show obsolete toggle
+  document.getElementById('show-obsolete')?.addEventListener('change', onUpdate);
+  
+  // Reset button
+  document.getElementById('reset-filter-btn')?.addEventListener('click', onReset);
+  
+  // Principle toggles (expand/collapse)
+  document.querySelectorAll('.principle-toggle-header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      
+      const targetId = btn.getAttribute('aria-controls');
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.style.display = expanded ? 'none' : '';
+      }
+      
+      btn.innerHTML = expanded ? '&#9654;' : '&#9660;';
+    });
+  });
+  
+  // Principle checkboxes (toggle all guidelines)
+  document.querySelectorAll('input[name="principle"]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      e.stopPropagation();
+      cb._skipUpdate = true;
+      togglePrincipleGuidelines(cb.value, cb.checked);
+      setTimeout(onUpdate, 0);
+    });
+  });
+  
+  // Guideline checkboxes
+  document.querySelectorAll('input[name="guideline"]').forEach(cb => {
+    cb.addEventListener('change', updatePrincipleStates);
+  });
+  
+  // Filter area change handler
+  filterArea?.addEventListener('change', (e) => {
+    if (e.target?.name === 'guideline') {
+      updatePrincipleStates();
+    } else if (e.target?.name === 'principle') {
+      e.target._skipUpdate = true;
+    }
+    onUpdate();
+  });
+  
+  // Search bar
+  const searchBar = document.getElementById('search-bar');
+  const clearBtn = document.getElementById('search-clear-btn');
+  
+  if (searchBar) {
+    searchBar.addEventListener('input', () => {
+      onUpdate();
+      if (clearBtn) {
+        clearBtn.style.display = searchBar.value ? '' : 'none';
+      }
+    });
+  }
+  
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      if (searchBar) {
+        searchBar.value = '';
+        clearBtn.style.display = 'none';
+        onUpdate();
+      }
+    });
+    clearBtn.style.display = searchBar?.value ? '' : 'none';
+  }
 }

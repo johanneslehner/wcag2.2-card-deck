@@ -1,43 +1,104 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
  * Base Styles
+ * 
+ * This file contains:
+ * - Token imports
+ * - CSS Reset
+ * - Base element styles
+ * - Utility classes
  */
 
-/* Import our tokens */
+/* ==========================================================================
+ * TOKEN IMPORTS
+ * ========================================================================== */
+
 @import 'tokens/colors.css';
 @import 'tokens/typography.css';
 @import 'tokens/spacing.css';
 @import 'tokens/effects.css';
 
-/* CSS Reset and Base Styles */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+/* ==========================================================================
+ * CSS RESET
+ * Modern CSS reset for consistent cross-browser styling
+ * ========================================================================== */
 
-html, body {
-  height: 100%;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: var(--font-family-base);
-  font-size: 16px;
-  line-height: var(--line-height-base);
-  color: var(--color-text-primary);
-  background-color: var(--color-background-primary);
 }
+
+/* Remove default list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Prevent font size inflation */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* Set core body defaults */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--theme-font-family-body);
+  font-size: var(--theme-font-size-body);
+  font-weight: var(--theme-font-weight-body);
+  line-height: var(--theme-line-height-body);
+  color: var(--theme-text-primary);
+  background-color: var(--theme-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+ * LAYOUT BASE
+ * ========================================================================== */
 
 body {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   overflow: hidden;
 }
 
+main {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Results area layout */
+.results-area {
+  flex: 1 1 100%;
+  padding: var(--theme-padding-md);
+  height: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* ==========================================================================
+ * TYPOGRAPHY
+ * ========================================================================== */
+
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-headings);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
+  font-family: var(--theme-font-family-heading);
+  font-weight: var(--theme-font-weight-heading);
+  line-height: var(--theme-line-height-heading);
+  letter-spacing: var(--theme-letter-spacing-heading);
   margin-top: 0;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-4);
+  color: var(--theme-text-primary);
 }
 
 h1 {
@@ -56,27 +117,117 @@ h4 {
   font-size: var(--font-size-lg);
 }
 
+h5 {
+  font-size: var(--font-size-md);
+}
+
+h6 {
+  font-size: var(--font-size-base);
+}
+
 p {
   margin-top: 0;
-  margin-bottom: 1em;
+  margin-bottom: var(--space-4);
 }
+
+/* ==========================================================================
+ * LINKS
+ * ========================================================================== */
 
 a {
-  color: currentColor;
+  color: var(--theme-text-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: var(--theme-transition-colors);
 }
 
-button, input, select, textarea {
+a:hover {
+  color: var(--theme-text-link-hover);
+}
+
+a:focus-visible {
+  outline: none;
+  border-radius: var(--radius-xs);
+  box-shadow: var(--theme-focus-ring);
+}
+
+/* ==========================================================================
+ * FORM ELEMENTS
+ * ========================================================================== */
+
+button,
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: 100%;
+  line-height: inherit;
   margin: 0;
 }
 
 button {
   cursor: pointer;
+  background: none;
+  border: none;
 }
 
-/* Utility Classes */
-.visually-hidden {
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Improve form control accessibility */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-focus-ring);
+}
+
+/* Remove default appearance from form controls for better styling */
+input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ==========================================================================
+ * IMAGES & MEDIA
+ * ========================================================================== */
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+ * ICON SYSTEM
+ * CSS-based icon system using mask images
+ * ========================================================================== */
+
+.icon {
+  --icon-size: 1.25rem;
+  
+  display: inline-block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask: var(--icon-url) no-repeat center / contain;
+  mask: var(--icon-url) no-repeat center / contain;
+}
+
+/* ==========================================================================
+ * ACCESSIBILITY UTILITIES
+ * ========================================================================== */
+
+/* Visually hidden - accessible to screen readers */
+.visually-hidden,
+.sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -88,43 +239,83 @@ button {
   border: 0;
 }
 
-/* Skip Link */
+/* Skip link for keyboard navigation */
 .skip-link {
   position: absolute;
-  left: 0;
-  top: 0;
-  background: var(--color-blue-600);
-  color: var(--color-white);
-  padding: var(--space-sm) var(--space-md);
-  z-index: 1000;
-  transform: translateY(-100%);
-  transition: transform var(--transition-fast);
+  left: var(--space-4);
+  top: var(--space-4);
+  z-index: var(--z-tooltip);
+  
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--theme-interactive-default);
+  color: var(--theme-text-inverse);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  border-radius: var(--theme-radius-button);
+  
+  transform: translateY(-200%);
+  transition: transform var(--theme-transition-fast);
 }
 
 .skip-link:focus {
   transform: translateY(0);
+  box-shadow: var(--theme-focus-ring);
 }
 
-main {
-  flex: 1 1 100%;
-  display: flex;
-  overflow: hidden;
-}
-/* Results area layout */
-.results-area {
-  flex: 1 1 100%;
-  padding: var(--space-md);
-  height: 100%;
-  overflow-y: auto;
+/* Focus visible polyfill - only show focus styles for keyboard navigation */
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
 }
 
-.icon {
-  inline-size: var(--icon-size, 1em);
-  block-size: var(--icon-size, 1em);
-  display: inline-block;
+:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-focus-ring);
+}
 
-  background-color: currentColor;
+/* ==========================================================================
+ * REDUCED MOTION
+ * Respect user preferences for reduced motion
+ * ========================================================================== */
 
-  -webkit-mask: var(--icon-url) no-repeat center / contain;
-          mask: var(--icon-url) no-repeat center / contain;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+ * SELECTION STYLES
+ * ========================================================================== */
+
+::selection {
+  background-color: var(--color-primary-200);
+  color: var(--theme-text-primary);
+}
+
+/* ==========================================================================
+ * SCROLLBAR STYLING (for Webkit browsers)
+ * ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--theme-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-400);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-500);
 }

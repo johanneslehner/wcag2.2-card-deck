@@ -1,130 +1,150 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
  * Sidebar Filter Component
+ * 
+ * Component tokens defined at the top for easy customization
  */
 
+/* ==========================================================================
+ * LEVEL 3: COMPONENT TOKENS
+ * ========================================================================== */
+
+:root {
+  /* Filter sidebar */
+  --filter-sidebar-min-width: 260px;
+  --filter-sidebar-max-width: 400px;
+  --filter-sidebar-bg: var(--theme-bg-secondary);
+  --filter-sidebar-border: var(--theme-border-default);
+  
+  /* Filter groups */
+  --filter-group-header-bg: var(--theme-bg-tertiary);
+  --filter-group-header-bg-hover: var(--color-neutral-200);
+  --filter-group-header-radius: var(--radius-md);
+  --filter-group-spacing: var(--space-6);
+  
+  /* Filter chips */
+  --filter-chip-bg: var(--theme-bg-tertiary);
+  --filter-chip-bg-hover: var(--color-neutral-200);
+  --filter-chip-bg-active: var(--theme-interactive-default);
+  --filter-chip-bg-active-hover: var(--theme-interactive-hover);
+  --filter-chip-border: var(--theme-border-strong);
+  --filter-chip-border-active: var(--theme-interactive-active);
+  --filter-chip-text: var(--theme-text-primary);
+  --filter-chip-text-active: var(--theme-text-inverse);
+  --filter-chip-radius: var(--radius-full);
+  
+  /* Toggle switch */
+  --toggle-track-width: 40px;
+  --toggle-track-height: 20px;
+  --toggle-thumb-size: 16px;
+  --toggle-track-bg: var(--color-neutral-400);
+  --toggle-track-bg-active: var(--theme-interactive-default);
+  --toggle-thumb-bg: var(--theme-bg-primary);
+  
+  /* Reset button */
+  --filter-reset-bg: var(--theme-bg-tertiary);
+  --filter-reset-text: var(--theme-interactive-default);
+}
+
+/* ==========================================================================
+ * FILTER SIDEBAR LAYOUT
+ * ========================================================================== */
+
 aside#filter-section {
-  min-width: 240px;
-  max-width: 480px;
-  flex: 1 1 360px;
+  min-width: var(--filter-sidebar-min-width);
+  max-width: var(--filter-sidebar-max-width);
+  flex: 1 1 320px;
   height: 100%;
-  padding-right: var(--space-md);
-  border-right: var(--border-width-thin) solid var(--color-border);
-  background: var(--color-background-secondary);
+  padding: var(--space-4);
+  padding-right: var(--space-4);
+  border-right: var(--border-1) solid var(--filter-sidebar-border);
+  background: var(--filter-sidebar-bg);
   overflow-y: auto;
-  z-index: 99;
+  z-index: var(--z-raised);
 }
 
 .filter-area {
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-
-/* Filter collapsible groups */
-.filter-collapsible-group {
-  margin-bottom: var(--filter-group-spacing);
-}
-
-.group-header {
-  display: block;
-  width: 100%;
-  background: var(--color-gray-100);
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-md);
-  border: none;
-  border-radius: var(--radius-md);
-  padding: var(--space-sm) var(--space-md);
-  margin-bottom: var(--space-sm);
-  text-align: left;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: background var(--transition-fast);
-}
-
-.group-header:hover {
-  background: var(--color-gray-200);
-}
-
-.group-header[aria-expanded="false"] {
-  background: var(--color-gray-200);
-}
-
-/* Principle tree groups */
-.principle-tree-group {
-  margin-bottom: var(--space-md);
-}
-
-.principle-tree-group > label {
-  font-weight: var(--font-weight-bold);
-  margin-bottom: var(--space-xs);
-  display: block;
-}
-
-.guideline-tree-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-md);
+  gap: var(--space-2);
 }
 
-.guideline-tree-list label {
-  font-weight: var(--font-weight-normal);
+/* ==========================================================================
+ * FILTER COLLAPSIBLE GROUPS
+ * ========================================================================== */
+
+.filter-collapsible-group {
+  margin-bottom: var(--space-4);
 }
 
-/* Principle toggles */
-.principle-toggle-header {
-  background: none;
-  border: none;
-}
-
-.principle-toggle-header:hover {
-  color: var(--color-blue-700);
-}
-
-.group-sub-header {
+.group-header,
+.filter-category-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xs);
-}
-.group-sub-header label {
-  flex: 1 1 100%;
-}
-
-.principle-inline-title {
-  font-weight: var(--font-weight-bold);
-  margin-right: var(--space-sm);
-}
-
-/* Ensure principle chips have consistent styling */
-.principle-chip .filter-chip-label {
-  border-radius: 16px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--filter-group-header-bg);
+  color: var(--theme-text-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  border: none;
+  border-radius: var(--filter-group-header-radius);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--theme-transition-all);
 }
 
-/* Filter labels and inputs */
-.filter-label {
-  margin-right: 0;
-  margin-bottom: var(--space-xs);
+.group-header:hover,
+.filter-category-header:hover {
+  background: var(--filter-group-header-bg-hover);
 }
 
-.filter-margin-bottom {
-  margin-bottom: var(--space-md);
+.group-header:focus-visible,
+.filter-category-header:focus-visible {
+  box-shadow: var(--theme-focus-ring);
 }
 
-/* Filter chip styles */
+.group-header[aria-expanded="false"],
+.filter-category-header[aria-expanded="false"] {
+  background: var(--color-neutral-200);
+}
+
+/* Chevron indicator */
+.group-header::after,
+.filter-category-header::after {
+  content: '';
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat center / contain;
+  transition: transform var(--theme-transition-fast);
+}
+
+.group-header[aria-expanded="false"]::after,
+.filter-category-header[aria-expanded="false"]::after {
+  transform: rotate(-90deg);
+}
+
+/* ==========================================================================
+ * FILTER GROUP CONTENT
+ * ========================================================================== */
+
 .group-list {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--filter-item-spacing);
-  margin-bottom: var(--space-md);
+  gap: var(--space-2);
+  padding: var(--space-3) 0;
 }
+
+/* ==========================================================================
+ * FILTER CHIPS
+ * ========================================================================== */
 
 .filter-chip {
   position: relative;
   display: inline-flex;
-  margin-bottom: var(--space-xs);
   cursor: pointer;
 }
 
@@ -133,156 +153,179 @@ aside#filter-section {
   opacity: 0;
   width: 0;
   height: 0;
+  pointer-events: none;
 }
 
 .filter-chip-label {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-xs) var(--space-sm);
-  background: var(--color-gray-100);
-  border: var(--border-width-thin) solid var(--color-gray-300);
-  border-radius: 16px; /* Explicit pixel value to ensure rounded corners */
+  gap: var(--space-1);
+  padding: var(--space-1-5) var(--space-3);
+  background: var(--filter-chip-bg);
+  border: var(--border-1) solid var(--filter-chip-border);
+  border-radius: var(--filter-chip-radius);
   font-size: var(--font-size-sm);
-  transition: all var(--transition-fast);
+  font-weight: var(--font-weight-medium);
+  color: var(--filter-chip-text);
+  transition: var(--theme-transition-all);
   user-select: none;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Add leading checkmark icon for selected state */
+/* Checkmark icon for selected state */
 .filter-chip-label::before {
-  content: "";
+  content: '';
   display: inline-block;
   width: 0;
   height: 0;
-  margin-right: 0;
   opacity: 0;
-  transition: all var(--transition-fast);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF' width='18px' height='18px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   transform: scale(0);
+  transition: var(--theme-transition-all);
+}
+
+.filter-chip:hover .filter-chip-label {
+  background: var(--filter-chip-bg-hover);
+}
+
+/* Selected state */
+.filter-chip input[type="checkbox"]:checked + .filter-chip-label {
+  background: var(--filter-chip-bg-active);
+  border-color: var(--filter-chip-border-active);
+  color: var(--filter-chip-text-active);
+  padding-left: var(--space-2);
 }
 
 .filter-chip input[type="checkbox"]:checked + .filter-chip-label::before {
-  content: "";
-  width: 16px;
-  height: 16px;
-  margin-right: var(--space-xs);
+  width: 14px;
+  height: 14px;
+  margin-right: var(--space-1);
   opacity: 1;
   transform: scale(1);
 }
 
-.filter-chip input[type="checkbox"]:checked + .filter-chip-label {
-  background: #1565C0; /* Darker blue for better contrast */
-  color: white;
-  border-color: #0D47A1;
-  padding-left: var(--space-xs);
-  font-weight: 500; /* Slightly bolder text for better readability */
-}
-
-.filter-chip:hover .filter-chip-label {
-  background: var(--color-gray-200);
-}
-
 .filter-chip input[type="checkbox"]:checked:hover + .filter-chip-label {
-  background: #0D47A1; /* Even darker on hover for better feedback */
+  background: var(--filter-chip-bg-active-hover);
 }
 
-.filter-chip input[type="checkbox"]:focus + .filter-chip-label {
-  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.5);
+/* Focus state */
+.filter-chip input[type="checkbox"]:focus-visible + .filter-chip-label {
+  box-shadow: var(--theme-focus-ring);
 }
 
+/* Disabled state */
 .filter-chip input[type="checkbox"]:disabled + .filter-chip-label {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Filter select styles - Material Design Inspired */
-.filter-select-label {
-  margin-right: var(--space-sm);
+/* ==========================================================================
+ * PRINCIPLES & GUIDELINES TREE
+ * ========================================================================== */
+
+.group-sub-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+}
+
+.group-sub-header label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+}
+
+.group-sub-header input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--theme-interactive-default);
+  cursor: pointer;
+}
+
+.principle-toggle-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  transition: var(--theme-transition-all);
+}
+
+.principle-toggle-header:hover {
+  background: var(--theme-bg-tertiary);
+  color: var(--theme-interactive-default);
+}
+
+.principle-toggle-header:focus-visible {
+  box-shadow: var(--theme-focus-ring);
+}
+
+.guideline-tree-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: var(--space-6);
+  padding-bottom: var(--space-3);
+}
+
+/* ==========================================================================
+ * SELECT DROPDOWN
+ * ========================================================================== */
+
+.filter-select-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--theme-text-primary);
 }
 
 .filter-select {
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-xs);
+  min-width: 140px;
+  padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
   border: none;
-  border-bottom: 2px solid var(--color-gray-300);
+  border-bottom: var(--border-2) solid var(--theme-border-strong);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background-color: var(--theme-bg-tertiary);
   font-size: var(--font-size-sm);
-  background: var(--color-gray-100);
+  font-weight: var(--font-weight-medium);
+  color: var(--theme-text-primary);
   cursor: pointer;
-  transition: all var(--transition-fast);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: var(--theme-transition-all);
+  
+  /* Custom dropdown arrow */
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 0 24 24' width='24px' fill='%23757575'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23616161'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 32px;
+  background-position: right var(--space-2) center;
+  background-size: var(--size-icon-md);
 }
 
 .filter-select:hover {
-  background-color: var(--color-gray-200);
-  border-bottom-color: var(--color-gray-400);
+  background-color: var(--color-neutral-200);
+  border-bottom-color: var(--color-neutral-400);
 }
 
-.filter-select:focus {
-  border-bottom-color: #1565C0; /* Match our chip color */
-  box-shadow: 0 1px 0 0 #1565C0; /* Match our chip color */
+.filter-select:focus-visible {
+  border-bottom-color: var(--theme-interactive-default);
+  box-shadow: 0 2px 0 0 var(--theme-interactive-default);
   outline: none;
 }
 
-/* Reset button styles - Material Design Inspired */
-.filter-reset-btn {
-  margin: var(--space-sm) 0 var(--space-md) 0;
-  padding: var(--space-xs) var(--space-md);
-  font-size: var(--font-size-base);
-  border-radius: 16px; /* Explicit value to ensure rounded corners */
-  border: none;
-  background: var(--color-gray-100);
-  color: #1565C0; /* Match our chip color */
-  transition: all var(--transition-fast);
-  cursor: pointer;
-  font-weight: var(--font-weight-medium, 500);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-}
+/* ==========================================================================
+ * TOGGLE SWITCH
+ * ========================================================================== */
 
-.filter-reset-btn:hover {
-  background: var(--color-gray-200);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.14);
-}
-
-.filter-reset-btn:active {
-  background: var(--color-gray-300);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-.filter-chip-btn {
-  background: var(--color-gray-100);
-  color: #1565C0; /* Match our chip color */
-  border: none;
-}
-
-.filter-chip-btn:hover {
-  background: var(--color-gray-200);
-}
-
-.filter-group-margin {
-  margin-bottom: var(--space-sm);
-}
-
-.filter-search-margin {
-  margin-bottom: var(--space-md);
-}
-
-.filter-search-input-margin {
-  margin-right: var(--space-sm);
-}
-
-/* Toggle Switch Styles - Material Design Inspired */
 .toggle-switch {
   position: relative;
   display: inline-flex;
@@ -291,75 +334,123 @@ aside#filter-section {
 }
 
 .toggle-switch input {
+  position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
-  position: absolute;
 }
 
 .toggle-slider {
   position: relative;
   display: inline-block;
-  width: 36px;
-  height: 14px;
-  background-color: var(--color-gray-300);
-  border-radius: 34px;
-  transition: var(--transition-fast);
-  margin-right: var(--space-sm);
+  width: var(--toggle-track-width);
+  height: var(--toggle-track-height);
+  background-color: var(--toggle-track-bg);
+  border-radius: var(--radius-full);
+  transition: var(--theme-transition-all);
+  margin-right: var(--space-2);
 }
 
-/* The circle thumb */
-.toggle-slider:before {
+/* Toggle thumb */
+.toggle-slider::before {
+  content: '';
   position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 0;
-  top: -3px;
-  background-color: var(--color-white);
-  border-radius: 50%;
-  transition: var(--transition-fast);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--toggle-thumb-size);
+  height: var(--toggle-thumb-size);
+  background-color: var(--toggle-thumb-bg);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  transition: var(--theme-transition-all);
 }
 
-/* Check mark inside the thumb when checked */
-.toggle-slider:after {
-  position: absolute;
-  content: "";
-  height: 10px;
-  width: 10px;
-  left: 5px; /* Position within the thumb */
-  top: 2px;
-  opacity: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18px' height='18px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: var(--transition-fast);
-  z-index: 2;
-  transform: scale(0);
-}
-
+/* Checked states */
 .toggle-switch input:checked + .toggle-slider {
-  background-color: rgba(21, 101, 192, 0.5); /* Light blue that matches our new chip color */
+  background-color: var(--toggle-track-bg-active);
 }
 
-.toggle-switch input:checked + .toggle-slider:before {
-  transform: translateX(16px);
-  background-color: #1565C0; /* Same dark blue as selected chips */
+.toggle-switch input:checked + .toggle-slider::before {
+  left: calc(100% - var(--toggle-thumb-size) - 2px);
 }
 
-.toggle-switch input:checked + .toggle-slider:after {
-  transform: translateX(16px) scale(1);
-  opacity: 1;
+/* Focus state */
+.toggle-switch input:focus-visible + .toggle-slider {
+  box-shadow: var(--theme-focus-ring);
 }
 
-.toggle-switch input:focus + .toggle-slider {
-  box-shadow: var(--focus-ring);
+/* Disabled state */
+.toggle-switch.disabled,
+.toggle-switch input:disabled + .toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .toggle-label {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   user-select: none;
-  font-weight: var(--font-weight-medium, 500);
+}
+
+/* ==========================================================================
+ * RESET FILTER BUTTON
+ * ========================================================================== */
+
+.filter-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  margin: var(--space-2) 0 var(--space-4);
+  background: var(--filter-reset-bg);
+  color: var(--filter-reset-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  border: none;
+  border-radius: var(--filter-chip-radius);
+  cursor: pointer;
+  transition: var(--theme-transition-all);
+}
+
+.filter-reset-btn:hover {
+  background: var(--color-neutral-200);
+}
+
+.filter-reset-btn:active {
+  background: var(--color-neutral-300);
+}
+
+.filter-reset-btn:focus-visible {
+  box-shadow: var(--theme-focus-ring);
+}
+
+/* ==========================================================================
+ * UTILITY CLASSES
+ * ========================================================================== */
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.filter-margin-bottom {
+  margin-bottom: var(--space-3);
+}
+
+/* ==========================================================================
+ * RESPONSIVE ADJUSTMENTS
+ * ========================================================================== */
+
+@media (max-width: 900px) {
+  aside#filter-section {
+    min-width: 100%;
+    max-width: 100%;
+    border-right: none;
+    border-bottom: var(--border-1) solid var(--filter-sidebar-border);
+  }
 }

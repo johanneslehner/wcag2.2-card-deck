@@ -1,89 +1,240 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
- * Color Tokens
+ * Color Tokens - Multi-level Custom Property Architecture
+ * 
+ * Level 1: Primitive tokens (--color-*)
+ * Level 2: Semantic tokens (--theme-*)
+ * Level 3: Component tokens (defined in component files)
  */
 
 :root {
-  /* Global color tokens */
-  --color-red-600: #c00;
-  --color-red-700: #a00;
-  --color-blue-600: #0074d9;
-  --color-blue-700: #0060b3;
-  --color-green-600: #2ecc40;
-  --color-green-700: #25a934;
-  --color-yellow-500: #ffb700;
-  --color-yellow-600: #e6a500;
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS
+   * Raw color values - these are the foundation of the color system
+   * ========================================================================== */
   
-  /* Neutral colors */
-  --color-white: #fff;
-  --color-gray-50: #fafafa;
-  --color-gray-100: #f5f5f5;
-  --color-gray-200: #eee;
-  --color-gray-300: #ddd;
-  --color-gray-400: #ccc;
-  --color-gray-500: #999;
-  --color-gray-600: #666;
-  --color-gray-700: #444;
-  --color-gray-800: #333;
-  --color-gray-900: #222;
-  --color-black: #000;
+  /* Primary Brand Colors */
+  --color-primary-50: #e3f2fd;
+  --color-primary-100: #bbdefb;
+  --color-primary-200: #90caf9;
+  --color-primary-300: #64b5f6;
+  --color-primary-400: #42a5f5;
+  --color-primary-500: #2196f3;
+  --color-primary-600: #1e88e5;
+  --color-primary-700: #1976d2;
+  --color-primary-800: #1565c0;
+  --color-primary-900: #0d47a1;
   
-  /* Semantic colors */
-  --color-text-primary: var(--color-gray-800);
-  --color-text-secondary: var(--color-gray-600);
-  --color-text-on-dark: var(--color-white);
-  --color-background-primary: var(--color-white);
-  --color-background-secondary: var(--color-gray-50);
-  --color-border: var(--color-gray-200);
+  /* Neutral/Gray Scale */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #eeeeee;
+  --color-neutral-300: #e0e0e0;
+  --color-neutral-400: #bdbdbd;
+  --color-neutral-500: #9e9e9e;
+  --color-neutral-600: #757575;
+  --color-neutral-700: #616161;
+  --color-neutral-800: #424242;
+  --color-neutral-900: #212121;
+  --color-neutral-1000: #000000;
   
-  /* WCAG Principle Colors */
-  --color-principle-1: var(--color-red-600);    /* Perceivable - Red */
-  --color-principle-2: var(--color-blue-600);   /* Operable - Blue */
-  --color-principle-3: var(--color-green-600);  /* Understandable - Green */
-  --color-principle-4: var(--color-yellow-500); /* Robust - Gold */
-
-  --color-wcag-principle-red: #B60000;
-  --color-wcag-principle-red--dark: #7A0000;
-  --color-wcag-principle-on-red: #FFFFFF;
-  --color-wcag-principle-on-red--high: #FFFFFF;
-  --color-wcag-principle-red--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-red--on-overlay: #FFFFFF;
+  /* Status Colors - Red */
+  --color-red-50: #ffebee;
+  --color-red-100: #ffcdd2;
+  --color-red-200: #ef9a9a;
+  --color-red-300: #e57373;
+  --color-red-400: #ef5350;
+  --color-red-500: #f44336;
+  --color-red-600: #e53935;
+  --color-red-700: #d32f2f;
+  --color-red-800: #c62828;
+  --color-red-900: #b71c1c;
   
-  --color-wcag-principle-blue: #1651A9;
-  --color-wcag-principle-blue--dark: #0E346C;
-  --color-wcag-principle-on-blue: #FFFFFF;
-  --color-wcag-principle-on-blue--high: #FFFFFF;
-  --color-wcag-principle-blue--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-blue--on-overlay: #FFFFFF;
+  /* Status Colors - Green */
+  --color-green-50: #e8f5e9;
+  --color-green-100: #c8e6c9;
+  --color-green-200: #a5d6a7;
+  --color-green-300: #81c784;
+  --color-green-400: #66bb6a;
+  --color-green-500: #4caf50;
+  --color-green-600: #43a047;
+  --color-green-700: #388e3c;
+  --color-green-800: #2e7d32;
+  --color-green-900: #1b5e20;
+  
+  /* Status Colors - Yellow/Amber */
+  --color-amber-50: #fff8e1;
+  --color-amber-100: #ffecb3;
+  --color-amber-200: #ffe082;
+  --color-amber-300: #ffd54f;
+  --color-amber-400: #ffca28;
+  --color-amber-500: #ffc107;
+  --color-amber-600: #ffb300;
+  --color-amber-700: #ffa000;
+  --color-amber-800: #ff8f00;
+  --color-amber-900: #ff6f00;
+  
+  /* Extended Palette for Themes */
+  --color-cyan-400: #26c6da;
+  --color-cyan-500: #00bcd4;
+  --color-cyan-600: #00acc1;
+  
+  --color-pink-300: #f06292;
+  --color-pink-400: #ec407a;
+  --color-pink-500: #e91e63;
+  
+  --color-orange-400: #ffa726;
+  --color-orange-500: #ff9800;
+  --color-orange-600: #fb8c00;
+  
+  --color-deep-purple-600: #5e35b1;
+  --color-deep-purple-700: #512da8;
+  
+  /* ==========================================================================
+   * LEVEL 2: SEMANTIC TOKENS
+   * Purpose-based tokens that reference primitives
+   * ========================================================================== */
+  
+  /* --- Text Colors --- */
+  --theme-text-primary: var(--color-neutral-900);
+  --theme-text-secondary: var(--color-neutral-600);
+  --theme-text-tertiary: var(--color-neutral-500);
+  --theme-text-disabled: var(--color-neutral-400);
+  --theme-text-inverse: var(--color-neutral-0);
+  --theme-text-link: var(--color-primary-700);
+  --theme-text-link-hover: var(--color-primary-900);
+  
+  /* --- Background Colors --- */
+  --theme-bg-primary: var(--color-neutral-0);
+  --theme-bg-secondary: var(--color-neutral-50);
+  --theme-bg-tertiary: var(--color-neutral-100);
+  --theme-bg-elevated: var(--color-neutral-0);
+  --theme-bg-overlay: rgba(0, 0, 0, 0.5);
+  --theme-bg-inverse: var(--color-neutral-900);
+  
+  /* --- Border Colors --- */
+  --theme-border-default: var(--color-neutral-200);
+  --theme-border-strong: var(--color-neutral-300);
+  --theme-border-subtle: var(--color-neutral-100);
+  --theme-border-focus: var(--color-primary-500);
+  
+  /* --- Interactive States --- */
+  --theme-interactive-default: var(--color-primary-600);
+  --theme-interactive-hover: var(--color-primary-700);
+  --theme-interactive-active: var(--color-primary-800);
+  --theme-interactive-disabled: var(--color-neutral-300);
+  
+  /* --- Status/Feedback Colors --- */
+  --theme-status-error: var(--color-red-600);
+  --theme-status-error-bg: var(--color-red-50);
+  --theme-status-success: var(--color-green-600);
+  --theme-status-success-bg: var(--color-green-50);
+  --theme-status-warning: var(--color-amber-600);
+  --theme-status-warning-bg: var(--color-amber-50);
+  --theme-status-info: var(--color-primary-600);
+  --theme-status-info-bg: var(--color-primary-50);
+  
+  /* --- Focus Ring --- */
+  --theme-focus-ring: 0 0 0 3px rgba(33, 150, 243, 0.4);
+  --theme-focus-ring-offset: 0 0 0 2px var(--theme-bg-primary), 0 0 0 4px var(--color-primary-500);
+  
+  /* ==========================================================================
+   * WCAG PRINCIPLE COLORS
+   * Specific colors for WCAG principles and themes
+   * ========================================================================== */
+  
+  /* --- Principle 1: Perceivable (Red) --- */
+  --wcag-principle-1-base: #b71c1c;
+  --wcag-principle-1-dark: #7f0000;
+  --wcag-principle-1-light: #e57373;
+  --wcag-principle-1-on: var(--color-neutral-0);
+  --wcag-principle-1-surface: rgba(183, 28, 28, 0.08);
+  
+  /* --- Principle 2: Operable (Blue) --- */
+  --wcag-principle-2-base: #1565c0;
+  --wcag-principle-2-dark: #003c8f;
+  --wcag-principle-2-light: #5e92f3;
+  --wcag-principle-2-on: var(--color-neutral-0);
+  --wcag-principle-2-surface: rgba(21, 101, 192, 0.08);
+  
+  /* --- Principle 3: Understandable (Green) --- */
+  --wcag-principle-3-base: #2e7d32;
+  --wcag-principle-3-dark: #005005;
+  --wcag-principle-3-light: #60ad5e;
+  --wcag-principle-3-on: var(--color-neutral-0);
+  --wcag-principle-3-surface: rgba(46, 125, 50, 0.08);
+  
+  /* --- Principle 4: Robust (Gold/Amber) --- */
+  --wcag-principle-4-base: #5d4037;
+  --wcag-principle-4-dark: #321911;
+  --wcag-principle-4-light: #8b6b61;
+  --wcag-principle-4-on: var(--color-neutral-0);
+  --wcag-principle-4-surface: rgba(93, 64, 55, 0.08);
+  
+  /* ==========================================================================
+   * WCAG THEME TAG COLORS
+   * Colors for theme category tags on cards
+   * ========================================================================== */
+  
+  /* Keyboard - Blue */
+  --wcag-theme-keyboard-bg: #1976d2;
+  --wcag-theme-keyboard-on: var(--color-neutral-0);
+  
+  /* Zoom - Deep Red */
+  --wcag-theme-zoom-bg: #880e4f;
+  --wcag-theme-zoom-on: var(--color-neutral-0);
+  
+  /* Code - Dark Gray */
+  --wcag-theme-code-bg: var(--color-neutral-800);
+  --wcag-theme-code-on: var(--color-neutral-0);
+  
+  /* Forms - Green */
+  --wcag-theme-forms-bg: #388e3c;
+  --wcag-theme-forms-on: var(--color-neutral-0);
+  
+  /* Sensory - Yellow */
+  --wcag-theme-sensory-bg: #f9a825;
+  --wcag-theme-sensory-on: var(--color-neutral-900);
+  
+  /* Gestures - Cyan */
+  --wcag-theme-gestures-bg: #00838f;
+  --wcag-theme-gestures-on: var(--color-neutral-0);
+  
+  /* Site - Pink */
+  --wcag-theme-site-bg: #ad1457;
+  --wcag-theme-site-on: var(--color-neutral-0);
+  
+  /* Wording - Orange */
+  --wcag-theme-wording-bg: #e65100;
+  --wcag-theme-wording-on: var(--color-neutral-0);
 
-  --color-wcag-principle-green: #186312;
-  --color-wcag-principle-green--dark: #11450D;
-  --color-wcag-principle-on-green: #FFFFFF;
-  --color-wcag-principle-on-green--high: #FFFFFF;
-  --color-wcag-principle-green--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-green--on-overlay: #FFFFFF;
-
-  --color-wcag-principle-gold: #535035;
-  --color-wcag-principle-gold--dark: #323020;
-  --color-wcag-principle-on-gold: #FFFFFF;
-  --color-wcag-principle-on-gold--high: #FFFFFF;
-  --color-wcag-principle-gold--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-gold--on-overlay: #FFFFFF;
-
-  --color-wcag-theme-blue: #3366DD;
-  --color-wcag-theme-on-blue: #FFFFFF;
-  --color-wcag-theme-red: #990033;
-  --color-wcag-theme-on-red: #FFFFFF;
-  --color-wcag-theme-black: #000000;
-  --color-wcag-theme-on-black: #FFFFFF;
-  --color-wcag-theme-green: #118800;
-  --color-wcag-theme-on-green: #FFFFFF;
-  --color-wcag-theme-yellow: #DDDD00;
-  --color-wcag-theme-on-yellow: #000000;
-  --color-wcag-theme-cyan: #00DDFF;
-  --color-wcag-theme-on-cyan: #000000;
-  --color-wcag-theme-pink: #FF66CC;
-  --color-wcag-theme-on-pink: #000000;
-  --color-wcag-theme-orange: #FF8733;
-  --color-wcag-theme-on-orange: #000000;
+  /* ==========================================================================
+   * LEGACY ALIASES (for backwards compatibility)
+   * ========================================================================== */
+  
+  --color-white: var(--color-neutral-0);
+  --color-black: var(--color-neutral-1000);
+  --color-gray-50: var(--color-neutral-50);
+  --color-gray-100: var(--color-neutral-100);
+  --color-gray-200: var(--color-neutral-200);
+  --color-gray-300: var(--color-neutral-300);
+  --color-gray-400: var(--color-neutral-400);
+  --color-gray-500: var(--color-neutral-500);
+  --color-gray-600: var(--color-neutral-600);
+  --color-gray-700: var(--color-neutral-700);
+  --color-gray-800: var(--color-neutral-800);
+  --color-gray-900: var(--color-neutral-900);
+  --color-blue-600: var(--color-primary-600);
+  --color-blue-700: var(--color-primary-700);
+  --color-red-600: var(--color-red-600);
+  --color-green-600: var(--color-green-600);
+  
+  /* Legacy semantic aliases */
+  --color-text-primary: var(--theme-text-primary);
+  --color-text-secondary: var(--theme-text-secondary);
+  --color-text-on-dark: var(--theme-text-inverse);
+  --color-background-primary: var(--theme-bg-primary);
+  --color-background-secondary: var(--theme-bg-secondary);
+  --color-border: var(--theme-border-default);
 }
