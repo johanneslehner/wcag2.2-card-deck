@@ -2,20 +2,20 @@
 // Filter UI and logic for WCAG 2.2 Card Deck
 
 export function setupFilters({ relations, translations, criteria, principles, renderCards }) {
-    console.log('Setting up filters with data:', {
-        relationsEmpty: !relations || Object.keys(relations).length === 0,
-        translationsEmpty: !translations || Object.keys(translations).length === 0,
-        criteriaEmpty: !criteria || Object.keys(criteria).length === 0,
-        principlesEmpty: !principles || Object.keys(principles).length === 0
-    });
-    
+    // Make setup idempotent: this function is called again on language change.
+    if (window.__wcagFiltersController) {
+        window.__wcagFiltersController.abort();
+    }
+    const controller = new AbortController();
+    window.__wcagFiltersController = controller;
+    const { signal } = controller;
+
     // If we're missing required data, display an error and exit
     if (!relations || Object.keys(relations).length === 0 || 
         !translations || Object.keys(translations).length === 0 ||
         !criteria || Object.keys(criteria).length === 0 ||
         !principles || Object.keys(principles).length === 0) {
         
-        console.error('Missing required data to setup filters and render cards');
         document.getElementById('cards-overview').innerHTML = 
             `<div class="no-results-message">Error: Some required data files could not be loaded. Please check the console for details.</div>`;
         return;
@@ -62,45 +62,13 @@ export function setupFilters({ relations, translations, criteria, principles, re
     // Create filter UI
     const filterArea = document.getElementById('filter-area');
 
-    // Helper to create collapsible filter group
-    function createCollapsibleFilterGroup(label, contentElem, groupId, categoryKey = null) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'filter-collapsible-group';
-        wrapper.style.marginBottom = '1.5em';
-        
-        const header = document.createElement('button');
-        header.className = 'filter-group-header';
-        header.type = 'button';
-        header.setAttribute('aria-expanded', 'true');
-        header.setAttribute('aria-controls', groupId);
-        
-        // Set the text content directly or use translation if categoryKey is provided
-        if (categoryKey && translationMap.filterCategories && translationMap.filterCategories[categoryKey]) {
-            header.textContent = translationMap.filterCategories[categoryKey];
-            header.setAttribute('data-filter-category', categoryKey);
-        } else {
-            header.textContent = label;
-        }
-        
-        header.onclick = function() {
-            const expanded = header.getAttribute('aria-expanded') === 'true';
-            header.setAttribute('aria-expanded', String(!expanded));
-            contentElem.style.display = expanded ? 'none' : '';
-        };
-        
-        contentElem.id = groupId;
-        wrapper.appendChild(header);
-        wrapper.appendChild(contentElem);
-        return wrapper;
-    }
-
     // Set up event listeners for the static filter controls
     
     // WCAG Version dropdown
-    document.getElementById('wcagVersion-select')?.addEventListener('change', update);
+    document.getElementById('wcagVersion-select')?.addEventListener('change', update, { signal });
     
     // Show/hide obsolete checkbox
-    document.getElementById('show-obsolete')?.addEventListener('change', update);
+    document.getElementById('show-obsolete')?.addEventListener('change', update, { signal });
     
     // Reset filter button
     document.getElementById('reset-filter-btn')?.addEventListener('click', function() {
@@ -129,7 +97,7 @@ export function setupFilters({ relations, translations, criteria, principles, re
         }
         
         update();
-    });
+    }, { signal });
 
     // Set up event handlers for the static Principles & Guidelines filter section
     // Add toggle functionality to the principle toggle buttons
@@ -140,10 +108,10 @@ export function setupFilters({ relations, translations, criteria, principles, re
             const controlId = toggleBtn.getAttribute('aria-controls');
             const guidelineList = document.getElementById(controlId);
             if (guidelineList) {
-                guidelineList.style.display = expanded ? 'none' : '';
+                guidelineList.hidden = expanded;
             }
             toggleBtn.innerHTML = expanded ? '&#9654;' : '&#9660;'; // right/down arrow
-        });
+        }, { signal });
     });
     
     // Add change handlers for guideline checkboxes to update principle states
@@ -151,7 +119,7 @@ export function setupFilters({ relations, translations, criteria, principles, re
         guidelineCb.addEventListener('change', function() {
             // Immediately update the related principle checkbox state
             updatePrincipleCheckboxStates();
-        });
+        }, { signal });
     });
 
     // Other filters (collapsible)
@@ -258,12 +226,9 @@ export function setupFilters({ relations, translations, criteria, principles, re
     }
     
     // Update obsolete checkbox label
-    const obsoleteLabel = document.querySelector('label[for="show-obsolete"]');
-    if (!obsoleteLabel) {
-        const obsoleteCheckbox = document.getElementById('show-obsolete');
-        if (obsoleteCheckbox && obsoleteCheckbox.parentNode.tagName === 'LABEL') {
-            updateTextNodeTranslation(obsoleteCheckbox.parentNode, 'obsolete', ' ');
-        }
+    const obsoleteText = document.getElementById('show-obsolete-label');
+    if (obsoleteText && translationMap.obsolete) {
+        obsoleteText.textContent = translationMap.obsolete;
     }
     
     // Update reset filter button
@@ -273,22 +238,30 @@ export function setupFilters({ relations, translations, criteria, principles, re
     }
     
     // Add collapsible behavior to all filter headers
-    document.querySelectorAll('.filter-collapsible-group .filter-group-header').forEach(header => {
+    document.querySelectorAll('.filter-collapsible-group .group-header').forEach(header => {
         // Update translation for header if it has a data attribute
         const category = header.getAttribute('data-filter-category');
         if (category) {
             updateTranslation(header, translationMap.filterCategories, category);
         }
         
-        header.onclick = function() {
+        header.addEventListener('click', function() {
             const expanded = this.getAttribute('aria-expanded') === 'true';
-            this.setAttribute('aria-expanded', !expanded);
+            this.setAttribute('aria-expanded', String(!expanded));
             const controlId = this.getAttribute('aria-controls');
-            const content = document.getElementById(controlId);
+            const content = controlId ? document.getElementById(controlId) : null;
             if (content) {
-                content.style.display = expanded ? 'none' : 'block';
+                content.hidden = expanded;
             }
-        };
+        }, { signal });
+
+        // Ensure initial state matches aria-expanded
+        const initialExpanded = header.getAttribute('aria-expanded') !== 'false';
+        const controlId = header.getAttribute('aria-controls');
+        const content = controlId ? document.getElementById(controlId) : null;
+        if (content) {
+            content.hidden = !initialExpanded;
+        }
     });
 
     // Full text search
@@ -355,7 +328,7 @@ export function setupFilters({ relations, translations, criteria, principles, re
             setTimeout(() => {
                 update();
             }, 0);
-        });
+        }, { signal });
     });
 
     // Store and restore filter selections
@@ -471,18 +444,14 @@ export function setupFilters({ relations, translations, criteria, principles, re
                 <button id="clear-search-btn">Clear search</button>
             </div>`;
             document.getElementById('clear-search-btn').onclick = function() {
-                if (document.getElementById('search-input')) document.getElementById('search-input').value = '';
+                const topSearch = document.getElementById('search-bar');
+                if (topSearch) topSearch.value = '';
                 update();
             };
         } else {
             renderCards(filtered, translations, criteria, translationMap, principles);
         }
         localStorage.setItem('wcag-filters', JSON.stringify(lastSelections));
-        setTimeout(() => {
-            if (document.getElementById('search-input')) {
-                document.getElementById('search-input').addEventListener('input', update);
-            }
-        }, 0);
     }
 
     filterArea.addEventListener('change', function(e) {
@@ -494,7 +463,7 @@ export function setupFilters({ relations, translations, criteria, principles, re
             e.target._ignoreNextUpdate = true;
         }
         update();
-    });
+    }, { signal });
 
     Object.entries(relations).forEach(([num, card]) => {
         card.principle = num.split('.')[0];
@@ -517,12 +486,12 @@ export function setupFilters({ relations, translations, criteria, principles, re
         topSearchInput.addEventListener('input', () => {
             update();
             topClearBtn.style.display = topSearchInput.value ? '' : 'none';
-        });
+        }, { signal });
         topClearBtn.addEventListener('click', () => {
             topSearchInput.value = '';
             topClearBtn.style.display = 'none';
             update();
-        });
+        }, { signal });
         topClearBtn.style.display = topSearchInput.value ? '' : 'none';
     }
 }

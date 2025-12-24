@@ -1,34 +1,71 @@
-/* 
+/*
  * WCAG 2.2 Card Deck - Design System
- * Spacing Tokens
+ * Spacing Tokens (layered custom properties)
  */
 
 :root {
-  /* Spacing scale */
-  --space-none: 0;
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-2xl: 3rem;     /* 48px */
-  --space-3xl: 4rem;     /* 64px */
-  
-  /* Specific layout spacing */
+  /* ------------------------------ */
+  /* Reference scale (ref)          */
+  /* ------------------------------ */
+  --ds-ref-space-0: 0rem;
+  --ds-ref-space-1: 0.25rem; /* 4px */
+  --ds-ref-space-2: 0.5rem; /* 8px */
+  --ds-ref-space-3: 0.75rem; /* 12px */
+  --ds-ref-space-4: 1rem; /* 16px */
+  --ds-ref-space-6: 1.5rem; /* 24px */
+  --ds-ref-space-8: 2rem; /* 32px */
+  --ds-ref-space-12: 3rem; /* 48px */
+  --ds-ref-space-16: 4rem; /* 64px */
+
+  /* ------------------------------ */
+  /* System (sys)                   */
+  /* ------------------------------ */
+  --ds-sys-space-xs: var(--ds-ref-space-1);
+  --ds-sys-space-sm: var(--ds-ref-space-2);
+  --ds-sys-space-md: var(--ds-ref-space-4);
+  --ds-sys-space-lg: var(--ds-ref-space-6);
+  --ds-sys-space-xl: var(--ds-ref-space-8);
+  --ds-sys-space-2xl: var(--ds-ref-space-12);
+  --ds-sys-space-3xl: var(--ds-ref-space-16);
+
+  /* Layout rhythm */
+  --ds-sys-layout-gutter: var(--ds-sys-space-md);
+  --ds-sys-layout-gap: var(--ds-sys-space-xl);
+
+  /* ------------------------------ */
+  /* Component (comp)               */
+  /* ------------------------------ */
+  --ds-comp-card-padding-x: var(--ds-sys-space-md);
+  --ds-comp-card-padding-y: var(--ds-sys-space-xl);
+  --ds-comp-card-footer-padding: var(--ds-sys-space-md);
+
+  --ds-comp-filter-group-gap: var(--ds-sys-space-lg);
+  --ds-comp-filter-item-gap: var(--ds-sys-space-sm);
+
+  /* ------------------------------ */
+  /* Legacy aliases                 */
+  /* ------------------------------ */
+  --space-none: var(--ds-ref-space-0);
+  --space-xs: var(--ds-sys-space-xs);
+  --space-sm: var(--ds-sys-space-sm);
+  --space-md: var(--ds-sys-space-md);
+  --space-lg: var(--ds-sys-space-lg);
+  --space-xl: var(--ds-sys-space-xl);
+  --space-2xl: var(--ds-sys-space-2xl);
+  --space-3xl: var(--ds-sys-space-3xl);
+
   --layout-spacing-sm: var(--space-sm);
   --layout-spacing-md: var(--space-md);
   --layout-spacing-lg: var(--space-lg);
   --layout-spacing-xl: var(--space-xl);
-  
-  /* Component specific spacing */
+
   --card-spacing: var(--space-md);
   --card-margin-bottom: var(--space-xl);
   --card-padding: var(--space-md);
   --card__header-padding: var(--space-md) var(--space-md) var(--space-sm);
   --card-body-padding: 0 var(--space-md);
   --card__footer-padding: var(--space-md);
-  
-  /* Filter spacing */
-  --filter-group-spacing: var(--space-lg);
-  --filter-item-spacing: var(--space-sm);
+
+  --filter-group-spacing: var(--ds-comp-filter-group-gap);
+  --filter-item-spacing: var(--ds-comp-filter-item-gap);
 }

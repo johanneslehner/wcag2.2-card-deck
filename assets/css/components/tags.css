@@ -16,42 +16,42 @@
 }
 
 .card-tag--keyboard {
-  --icon-url: url('../icons/keyboard.svg');
+  --icon-url: url('../../icons/keyboard.svg');
   --color-tag-background: var(--color-wcag-theme-blue);
   --color-tag-content: var(--color-wcag-theme-on-blue);
 }
 .card-tag--zoom {
-  --icon-url: url('../icons/magnify-plus.svg');
+  --icon-url: url('../../icons/magnify-plus.svg');
   --color-tag-background: var(--color-wcag-theme-red);
   --color-tag-content: var(--color-wcag-theme-on-red);
 }
 .card-tag--code {
-  --icon-url: url('../icons/code-block-tags.svg');
+  --icon-url: url('../../icons/code-block-tags.svg');
   --color-tag-background: var(--color-wcag-theme-black);
   --color-tag-content: var(--color-wcag-theme-on-black);
 }
 .card-tag--forms {
-  --icon-url: url('../icons/form-textbox-password.svg');
+  --icon-url: url('../../icons/form-textbox-password.svg');
   --color-tag-background: var(--color-wcag-theme-green);
   --color-tag-content: var(--color-wcag-theme-on-green);
 }
 .card-tag--sensory {
-  --icon-url: url('../icons/motion-sensor.svg');
+  --icon-url: url('../../icons/motion-sensor.svg');
   --color-tag-background: var(--color-wcag-theme-yellow);
   --color-tag-content: var(--color-wcag-theme-on-yellow);
 }
 .card-tag--gestures {
-  --icon-url: url('../icons/gesture-double-tap.svg');
+  --icon-url: url('../../icons/gesture-double-tap.svg');
   --color-tag-background: var(--color-wcag-theme-cyan);
   --color-tag-content: var(--color-wcag-theme-on-cyan);
 }
 .card-tag--site {
-  --icon-url: url('../icons/sitemap.svg');
+  --icon-url: url('../../icons/sitemap.svg');
   --color-tag-background: var(--color-wcag-theme-pink);
   --color-tag-content: var(--color-wcag-theme-on-pink);
 }
 .card-tag--wording {
-  --icon-url: url('../icons/text-box.svg');
+  --icon-url: url('../../icons/text-box.svg');
   --color-tag-background: var(--color-wcag-theme-orange);
   --color-tag-content: var(--color-wcag-theme-on-orange);
 }

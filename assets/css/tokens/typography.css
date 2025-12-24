@@ -1,31 +1,65 @@
-/* 
+/*
  * WCAG 2.2 Card Deck - Design System
- * Typography Tokens
+ * Typography Tokens (layered custom properties)
  */
 
 :root {
-  /* Font families */
-  --font-family-base: 'Segoe UI', Arial, sans-serif;
-  --font-family-headings: 'Segoe UI', Arial, sans-serif;
-  
-  /* Font sizes */
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-md: 1.125rem;   /* 18px */
-  --font-size-lg: 1.25rem;    /* 20px */
-  --font-size-xl: 1.5rem;     /* 24px */
-  --font-size-2xl: 1.75rem;   /* 28px */
-  --font-size-3xl: 2rem;      /* 32px */
-  
-  /* Line heights */
-  --line-height-tight: 1.2;
-  --line-height-base: 1.5;
-  --line-height-relaxed: 1.75;
-  
-  /* Font weights */
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  /* ------------------------------ */
+  /* Reference (ref)                */
+  /* ------------------------------ */
+  --ds-ref-font-family-sans: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+
+  --ds-ref-font-size-12: 0.75rem;
+  --ds-ref-font-size-14: 0.875rem;
+  --ds-ref-font-size-16: 1rem;
+  --ds-ref-font-size-18: 1.125rem;
+  --ds-ref-font-size-20: 1.25rem;
+  --ds-ref-font-size-24: 1.5rem;
+  --ds-ref-font-size-28: 1.75rem;
+  --ds-ref-font-size-32: 2rem;
+
+  --ds-ref-line-height-tight: 1.2;
+  --ds-ref-line-height-base: 1.5;
+  --ds-ref-line-height-relaxed: 1.75;
+
+  --ds-ref-font-weight-regular: 400;
+  --ds-ref-font-weight-medium: 500;
+  --ds-ref-font-weight-semibold: 600;
+  --ds-ref-font-weight-bold: 700;
+
+  /* ------------------------------ */
+  /* System (sys)                   */
+  /* ------------------------------ */
+  --ds-sys-font-family-body: var(--ds-ref-font-family-sans);
+  --ds-sys-font-family-heading: var(--ds-ref-font-family-sans);
+
+  --ds-sys-font-size-body: var(--ds-ref-font-size-16);
+  --ds-sys-font-size-caption: var(--ds-ref-font-size-14);
+
+  --ds-sys-line-height-body: var(--ds-ref-line-height-base);
+  --ds-sys-line-height-heading: var(--ds-ref-line-height-tight);
+
+  /* ------------------------------ */
+  /* Legacy aliases                 */
+  /* ------------------------------ */
+  --font-family-base: var(--ds-sys-font-family-body);
+  --font-family-headings: var(--ds-sys-font-family-heading);
+
+  --font-size-xs: var(--ds-ref-font-size-12);
+  --font-size-sm: var(--ds-ref-font-size-14);
+  --font-size-base: var(--ds-ref-font-size-16);
+  --font-size-md: var(--ds-ref-font-size-18);
+  --font-size-lg: var(--ds-ref-font-size-20);
+  --font-size-xl: var(--ds-ref-font-size-24);
+  --font-size-2xl: var(--ds-ref-font-size-28);
+  --font-size-3xl: var(--ds-ref-font-size-32);
+
+  --line-height-tight: var(--ds-ref-line-height-tight);
+  --line-height-base: var(--ds-sys-line-height-body);
+  --line-height-relaxed: var(--ds-ref-line-height-relaxed);
+
+  --font-weight-normal: var(--ds-ref-font-weight-regular);
+  --font-weight-medium: var(--ds-ref-font-weight-medium);
+  --font-weight-semibold: var(--ds-ref-font-weight-semibold);
+  --font-weight-bold: var(--ds-ref-font-weight-bold);
 }

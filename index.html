@@ -19,7 +19,7 @@
             <div class="header-row">
                 <form id="search-form" role="search" aria-label="Text search">
                     <input type="search" id="search-bar" name="search" placeholder="Search..." autocomplete="off" />
-                    <button type="button" id="search-clear-btn" style="display:none;">Clear</button>
+                    <button type="button" id="search-clear-btn" aria-label="Clear search">Clear</button>
                 </form>
                 <div id="search-helper" class="search-helper">Search success criteria, title, description...</div>
             </div>
@@ -43,6 +43,7 @@
                         <label class="toggle-switch">
                             <input type="checkbox" id="show-obsolete">
                             <span class="toggle-slider"></span>
+                            <span class="toggle-label" id="show-obsolete-label">Show obsolete criteria</span>
                         </label>
                     </div>
 

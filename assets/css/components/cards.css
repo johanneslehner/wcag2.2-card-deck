@@ -27,11 +27,11 @@
 
 /* Individual card styling */
 .card {
-  border-radius: var(--radius-xl);
+  border-radius: var(--ds-comp-card-radius);
   border: none;
   box-shadow: var(--shadow-md);
-  background: var(--card-background-color, var(--color-background-primary));
-  color: var(--card__content-color, var(--color-text-primary));
+  background: var(--card-background-color, var(--ds-comp-card-surface));
+  color: var(--card__content-color, var(--ds-comp-card-text));
   margin-bottom: var(--card-margin-bottom);
   font-family: var(--font-family-base);
   overflow: hidden;
@@ -54,8 +54,8 @@
 
 /* Principle styling in card */
 .card__principle {
-  padding: 12px 16px;
-  border-radius: var(--radius-xl) 0 var(--radius-xl) 0;
+  padding: var(--ds-ref-space-3) var(--space-md);
+  border-radius: var(--ds-comp-card-radius) 0 var(--ds-comp-card-radius) 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,18 +68,18 @@
 
 /* Level badges in card */
 .card-level {
-  width: 48px;
-  height: 32px;
+  width: 3rem;  /* 48px */
+  height: 2rem; /* 32px */
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-background-primary);
-  color: var(--color-text-primary);
-  border-radius: var(--radius-md);
+  background: var(--ds-sys-color-surface-1);
+  color: var(--ds-sys-color-text);
+  border-radius: var(--ds-comp-control-radius);
   padding: var(--space-xs) var(--space-sm);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-base);
-  margin: 12px 12px 0 0;
+  margin: var(--ds-ref-space-3) var(--ds-ref-space-3) 0 0;
 }
 
 /* Card main content */
@@ -90,7 +90,7 @@
 
 .card__content {
   flex: 1 1 100%;
-  padding: 32px 16px;
+  padding: var(--space-xl) var(--space-md);
 }
 
 /* Number and title in card */
@@ -117,15 +117,15 @@
   gap: 0;
 }
 .card__meta {
-  padding: 12px 16px;
+  padding: var(--ds-ref-space-3) var(--space-md);
 }
 .sc-themes {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--color-gray-50);
-  border-top: var(--border-width-thin) solid var(--color-gray-200);
+  gap: var(--space-sm);
+  padding: var(--ds-ref-space-3) var(--space-md);
+  background: var(--ds-sys-color-surface-2);
+  border-top: var(--border-width-thin) solid var(--ds-sys-color-border);
   font-size: var(--font-size-sm);
 }
 
@@ -139,8 +139,8 @@
 /* Card title */
 .card__title {
   color: var(--card-title-color);
-  font-size: 18px;
-  line-height: 27px;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
   font-weight: var(--font-weight-bold);
 }
 .card__title-overline {
@@ -150,20 +150,20 @@
 }
 .icon-list {
   display: inline-flex;
-  gap: 4px;
+  gap: var(--space-xs);
   vertical-align: middle;
   color: var(--card-background-color);
 }
 .icon-list .icon-wrapper {
   display: flex;
-  padding: 4px;
+  padding: var(--space-xs);
   border-radius: var(--radius-sm);
-  --icon-size: 20px;
+  --icon-size: 1.25rem; /* 20px */
   background: var(--card-title-color);
 }
 
 .sc-number {
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   line-height: 1;
 }
 
@@ -183,8 +183,9 @@
 
 /* QR code */
 .card-qr {
-  width: 64px;
-  height: 64px;
+  width: var(--space-3xl);
+  height: var(--space-3xl);
+  color: var(--card-qr-color, currentColor);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
 }
 
@@ -194,7 +195,7 @@
   --card-background-color: var(--color-wcag-principle-red);
   --card-title-color: var(--color-wcag-principle-on-red);
   --card__content-color: var(--color-wcag-principle-on-red);
-  --icon-url: url('../icons/eye-off-alt.svg');
+  --icon-url: url('../../icons/eye-off-alt.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
   --card-qr-color: var(--card__content-color);
@@ -205,7 +206,7 @@
   --card-background-color: var(--color-wcag-principle-blue);
   --card-title-color: var(--color-wcag-principle-on-blue);
   --card__content-color: var(--color-wcag-principle-on-blue);
-  --icon-url: url('../icons/cog.svg');
+  --icon-url: url('../../icons/cog.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
   --card-qr-color: var(--card__content-color);
@@ -216,7 +217,7 @@
   --card-background-color: var(--color-wcag-principle-green);
   --card-title-color: var(--color-wcag-principle-on-green);
   --card__content-color: var(--color-wcag-principle-on-green);
-  --icon-url: url('../icons/brain.svg');
+  --icon-url: url('../../icons/brain.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
   --card-qr-color: var(--card__content-color);
@@ -227,7 +228,7 @@
   --card-background-color: var(--color-wcag-principle-gold);
   --card-title-color: var(--color-wcag-principle-on-gold);
   --card__content-color: var(--color-wcag-principle-on-gold);
-  --icon-url: url('../icons/responsive.svg');
+  --icon-url: url('../../icons/responsive.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
   --card-qr-color: var(--card__content-color);
@@ -246,7 +247,7 @@
 .no-results-message {
   padding: var(--space-xl);
   text-align: center;
-  color: var(--color-red-600);
+  color: var(--ds-sys-color-danger);
   font-size: var(--font-size-lg);
 }
 

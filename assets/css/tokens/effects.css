@@ -1,30 +1,90 @@
-/* 
+/*
  * WCAG 2.2 Card Deck - Design System
- * Border & Effect Tokens
+ * Border & Effect Tokens (layered custom properties)
  */
 
 :root {
+  /* ------------------------------ */
+  /* Reference (ref)                */
+  /* ------------------------------ */
+
   /* Border radius */
-  --radius-none: 0;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-full: 9999px;
-  
+  --ds-ref-radius-none: 0px;
+  --ds-ref-radius-xs: 6px;
+  --ds-ref-radius-sm: 8px;
+  --ds-ref-radius-md: 12px;
+  --ds-ref-radius-lg: 16px;
+  --ds-ref-radius-xl: 20px;
+  --ds-ref-radius-full: 9999px;
+
   /* Border widths */
-  --border-width-thin: 1px;
-  --border-width-medium: 2px;
-  --border-width-thick: 4px;
-  --border-width-accent: 8px;
-  
+  --ds-ref-border-width-thin: 1px;
+  --ds-ref-border-width-medium: 2px;
+  --ds-ref-border-width-thick: 4px;
+  --ds-ref-border-width-accent: 8px;
+
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.12);
-  
-  /* Effects */
-  --transition-fast: 0.2s;
-  --transition-medium: 0.3s;
-  --transition-slow: 0.5s;
+  --ds-ref-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --ds-ref-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.10);
+  --ds-ref-shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.14);
+
+  /* Motion */
+  --ds-ref-transition-fast: 140ms;
+  --ds-ref-transition-medium: 200ms;
+  --ds-ref-transition-slow: 320ms;
+
+  /* ------------------------------ */
+  /* System (sys)                   */
+  /* ------------------------------ */
+
+  /* Focus ring uses a color from colors.css: --ds-sys-color-focus-ring */
+  --ds-sys-focus-ring-width: 3px;
+  --ds-sys-focus-ring: 0 0 0 var(--ds-sys-focus-ring-width) var(--ds-sys-color-focus-ring);
+
+  /* ------------------------------ */
+  /* Component (comp)               */
+  /* ------------------------------ */
+
+  --ds-comp-control-radius: var(--ds-ref-radius-xs);
+  --ds-comp-chip-radius: var(--ds-ref-radius-full);
+  --ds-comp-card-radius: var(--ds-ref-radius-xl);
+
+  /* ------------------------------ */
+  /* Legacy aliases                 */
+  /* ------------------------------ */
+
+  --radius-none: var(--ds-ref-radius-none);
+  --radius-xs: var(--ds-ref-radius-xs);
+  --radius-sm: var(--ds-ref-radius-sm);
+  --radius-md: var(--ds-ref-radius-md);
+  --radius-lg: var(--ds-ref-radius-lg);
+  --radius-xl: var(--ds-ref-radius-xl);
+  --radius-full: var(--ds-ref-radius-full);
+
+  --border-width-thin: var(--ds-ref-border-width-thin);
+  --border-width-medium: var(--ds-ref-border-width-medium);
+  --border-width-thick: var(--ds-ref-border-width-thick);
+  --border-width-accent: var(--ds-ref-border-width-accent);
+
+  --shadow-sm: var(--ds-ref-shadow-sm);
+  --shadow-md: var(--ds-ref-shadow-md);
+  --shadow-lg: var(--ds-ref-shadow-lg);
+
+  --transition-fast: var(--ds-ref-transition-fast);
+  --transition-medium: var(--ds-ref-transition-medium);
+  --transition-slow: var(--ds-ref-transition-slow);
+
+  --focus-ring: var(--ds-sys-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-medium: 0ms;
+    --transition-slow: 0ms;
+  }
+}
+
+:root[data-high-contrast="true"] {
+  --ds-sys-focus-ring-width: 4px;
 }

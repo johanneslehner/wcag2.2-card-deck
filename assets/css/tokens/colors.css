@@ -1,89 +1,243 @@
-/* 
+/*
  * WCAG 2.2 Card Deck - Design System
- * Color Tokens
+ * Color Tokens (layered custom properties)
+ *
+ * Layers:
+ * - ref: raw palette values (never used directly in components)
+ * - sys: semantic meaning (surface/text/border/brand/focus)
+ * - comp: component-level tokens
+ *
+ * Back-compat:
+ * - legacy --color-* variables remain, mapped to the layered system.
  */
 
 :root {
+  /* Let the UA style form controls appropriately in both modes */
+  color-scheme: light dark;
+
+  /* ------------------------------ */
+  /* Reference palette (ref)        */
+  /* ------------------------------ */
+
+  /* Accents */
+  --ds-ref-color-red-600: #cc0000;
+  --ds-ref-color-red-700: #aa0000;
+  --ds-ref-color-blue-600: #0074d9;
+  --ds-ref-color-blue-700: #0060b3;
+  --ds-ref-color-green-600: #2ecc40;
+  --ds-ref-color-green-700: #25a934;
+  --ds-ref-color-yellow-500: #ffb700;
+  --ds-ref-color-yellow-600: #e6a500;
+
+  /* Neutrals */
+  --ds-ref-color-white: #ffffff;
+  --ds-ref-color-gray-50: #fafafa;
+  --ds-ref-color-gray-100: #f5f5f5;
+  --ds-ref-color-gray-200: #eeeeee;
+  --ds-ref-color-gray-300: #dddddd;
+  --ds-ref-color-gray-400: #cccccc;
+  --ds-ref-color-gray-500: #999999;
+  --ds-ref-color-gray-600: #666666;
+  --ds-ref-color-gray-700: #444444;
+  --ds-ref-color-gray-800: #333333;
+  --ds-ref-color-gray-900: #222222;
+  --ds-ref-color-black: #000000;
+
+  /* WCAG principle palette (ref) */
+  --ds-ref-color-principle-red: #b60000;
+  --ds-ref-color-principle-red-dark: #7a0000;
+  --ds-ref-color-principle-blue: #1651a9;
+  --ds-ref-color-principle-blue-dark: #0e346c;
+  --ds-ref-color-principle-green: #186312;
+  --ds-ref-color-principle-green-dark: #11450d;
+  --ds-ref-color-principle-gold: #535035;
+  --ds-ref-color-principle-gold-dark: #323020;
+  --ds-ref-color-overlay-40: rgba(0, 0, 0, 0.4);
+
+  /* Theme tag palette (ref) */
+  --ds-ref-color-theme-blue: #3366dd;
+  --ds-ref-color-theme-red: #990033;
+  --ds-ref-color-theme-black: #000000;
+  --ds-ref-color-theme-green: #118800;
+  --ds-ref-color-theme-yellow: #dddd00;
+  --ds-ref-color-theme-cyan: #00ddff;
+  --ds-ref-color-theme-pink: #ff66cc;
+  --ds-ref-color-theme-orange: #ff8733;
+
+  /* ------------------------------ */
+  /* System semantics (sys)         */
+  /* ------------------------------ */
+
+  --ds-sys-color-bg: var(--ds-ref-color-white);
+  --ds-sys-color-surface-1: var(--ds-ref-color-white);
+  --ds-sys-color-surface-2: var(--ds-ref-color-gray-50);
+  --ds-sys-color-surface-3: var(--ds-ref-color-gray-100);
+
+  --ds-sys-color-text: var(--ds-ref-color-gray-800);
+  --ds-sys-color-text-muted: var(--ds-ref-color-gray-600);
+  --ds-sys-color-text-on-dark: var(--ds-ref-color-white);
+
+  --ds-sys-color-border: var(--ds-ref-color-gray-200);
+  --ds-sys-color-border-strong: var(--ds-ref-color-gray-300);
+
+  --ds-sys-color-accent: var(--ds-ref-color-blue-600);
+  --ds-sys-color-accent-hover: var(--ds-ref-color-blue-700);
+  --ds-sys-color-danger: var(--ds-ref-color-red-600);
+
+  /* Focus ring is defined as a color; the final ring shape lives in effects.css */
+  --ds-sys-color-focus-ring: rgba(0, 116, 217, 0.45);
+
+  /* ------------------------------ */
+  /* Component tokens (comp)        */
+  /* ------------------------------ */
+
+  /* Header */
+  --ds-comp-header-bg: var(--ds-sys-color-surface-1);
+  --ds-comp-header-border: var(--ds-sys-color-border);
+
+  /* Inputs */
+  --ds-comp-input-bg: var(--ds-sys-color-surface-1);
+  --ds-comp-input-border: var(--ds-sys-color-border-strong);
+  --ds-comp-input-border-focus: var(--ds-sys-color-accent);
+
+  /* Filter chips */
+  --ds-comp-chip-bg: var(--ds-sys-color-surface-3);
+  --ds-comp-chip-border: var(--ds-sys-color-border-strong);
+  --ds-comp-chip-bg-hover: var(--ds-ref-color-gray-200);
+  --ds-comp-chip-selected-bg: var(--ds-sys-color-accent);
+  --ds-comp-chip-selected-border: var(--ds-sys-color-accent-hover);
+  --ds-comp-chip-selected-text: var(--ds-ref-color-white);
+
+  /* Cards */
+  --ds-comp-card-surface: var(--ds-sys-color-surface-1);
+  --ds-comp-card-text: var(--ds-sys-color-text);
+
+  /* ------------------------------ */
+  /* Legacy variables (aliases)     */
+  /* ------------------------------ */
+
   /* Global color tokens */
-  --color-red-600: #c00;
-  --color-red-700: #a00;
-  --color-blue-600: #0074d9;
-  --color-blue-700: #0060b3;
-  --color-green-600: #2ecc40;
-  --color-green-700: #25a934;
-  --color-yellow-500: #ffb700;
-  --color-yellow-600: #e6a500;
-  
+  --color-red-600: var(--ds-ref-color-red-600);
+  --color-red-700: var(--ds-ref-color-red-700);
+  --color-blue-600: var(--ds-ref-color-blue-600);
+  --color-blue-700: var(--ds-ref-color-blue-700);
+  --color-green-600: var(--ds-ref-color-green-600);
+  --color-green-700: var(--ds-ref-color-green-700);
+  --color-yellow-500: var(--ds-ref-color-yellow-500);
+  --color-yellow-600: var(--ds-ref-color-yellow-600);
+
   /* Neutral colors */
-  --color-white: #fff;
-  --color-gray-50: #fafafa;
-  --color-gray-100: #f5f5f5;
-  --color-gray-200: #eee;
-  --color-gray-300: #ddd;
-  --color-gray-400: #ccc;
-  --color-gray-500: #999;
-  --color-gray-600: #666;
-  --color-gray-700: #444;
-  --color-gray-800: #333;
-  --color-gray-900: #222;
-  --color-black: #000;
-  
+  --color-white: var(--ds-ref-color-white);
+  --color-gray-50: var(--ds-ref-color-gray-50);
+  --color-gray-100: var(--ds-ref-color-gray-100);
+  --color-gray-200: var(--ds-ref-color-gray-200);
+  --color-gray-300: var(--ds-ref-color-gray-300);
+  --color-gray-400: var(--ds-ref-color-gray-400);
+  --color-gray-500: var(--ds-ref-color-gray-500);
+  --color-gray-600: var(--ds-ref-color-gray-600);
+  --color-gray-700: var(--ds-ref-color-gray-700);
+  --color-gray-800: var(--ds-ref-color-gray-800);
+  --color-gray-900: var(--ds-ref-color-gray-900);
+  --color-black: var(--ds-ref-color-black);
+
   /* Semantic colors */
-  --color-text-primary: var(--color-gray-800);
-  --color-text-secondary: var(--color-gray-600);
-  --color-text-on-dark: var(--color-white);
-  --color-background-primary: var(--color-white);
-  --color-background-secondary: var(--color-gray-50);
-  --color-border: var(--color-gray-200);
-  
+  --color-text-primary: var(--ds-sys-color-text);
+  --color-text-secondary: var(--ds-sys-color-text-muted);
+  --color-text-on-dark: var(--ds-sys-color-text-on-dark);
+  --color-background-primary: var(--ds-sys-color-bg);
+  --color-background-secondary: var(--ds-sys-color-surface-2);
+  --color-border: var(--ds-sys-color-border);
+
   /* WCAG Principle Colors */
-  --color-principle-1: var(--color-red-600);    /* Perceivable - Red */
-  --color-principle-2: var(--color-blue-600);   /* Operable - Blue */
-  --color-principle-3: var(--color-green-600);  /* Understandable - Green */
-  --color-principle-4: var(--color-yellow-500); /* Robust - Gold */
+  --color-principle-1: var(--ds-ref-color-red-600); /* Perceivable - Red */
+  --color-principle-2: var(--ds-ref-color-blue-600); /* Operable - Blue */
+  --color-principle-3: var(--ds-ref-color-green-600); /* Understandable - Green */
+  --color-principle-4: var(--ds-ref-color-yellow-500); /* Robust - Gold */
 
-  --color-wcag-principle-red: #B60000;
-  --color-wcag-principle-red--dark: #7A0000;
-  --color-wcag-principle-on-red: #FFFFFF;
-  --color-wcag-principle-on-red--high: #FFFFFF;
-  --color-wcag-principle-red--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-red--on-overlay: #FFFFFF;
-  
-  --color-wcag-principle-blue: #1651A9;
-  --color-wcag-principle-blue--dark: #0E346C;
-  --color-wcag-principle-on-blue: #FFFFFF;
-  --color-wcag-principle-on-blue--high: #FFFFFF;
-  --color-wcag-principle-blue--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-blue--on-overlay: #FFFFFF;
+  --color-wcag-principle-red: var(--ds-ref-color-principle-red);
+  --color-wcag-principle-red--dark: var(--ds-ref-color-principle-red-dark);
+  --color-wcag-principle-on-red: var(--ds-ref-color-white);
+  --color-wcag-principle-on-red--high: var(--ds-ref-color-white);
+  --color-wcag-principle-red--overlay: var(--ds-ref-color-overlay-40);
+  --color-wcag-principle-red--on-overlay: var(--ds-ref-color-white);
 
-  --color-wcag-principle-green: #186312;
-  --color-wcag-principle-green--dark: #11450D;
-  --color-wcag-principle-on-green: #FFFFFF;
-  --color-wcag-principle-on-green--high: #FFFFFF;
-  --color-wcag-principle-green--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-green--on-overlay: #FFFFFF;
+  --color-wcag-principle-blue: var(--ds-ref-color-principle-blue);
+  --color-wcag-principle-blue--dark: var(--ds-ref-color-principle-blue-dark);
+  --color-wcag-principle-on-blue: var(--ds-ref-color-white);
+  --color-wcag-principle-on-blue--high: var(--ds-ref-color-white);
+  --color-wcag-principle-blue--overlay: var(--ds-ref-color-overlay-40);
+  --color-wcag-principle-blue--on-overlay: var(--ds-ref-color-white);
 
-  --color-wcag-principle-gold: #535035;
-  --color-wcag-principle-gold--dark: #323020;
-  --color-wcag-principle-on-gold: #FFFFFF;
-  --color-wcag-principle-on-gold--high: #FFFFFF;
-  --color-wcag-principle-gold--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-gold--on-overlay: #FFFFFF;
+  --color-wcag-principle-green: var(--ds-ref-color-principle-green);
+  --color-wcag-principle-green--dark: var(--ds-ref-color-principle-green-dark);
+  --color-wcag-principle-on-green: var(--ds-ref-color-white);
+  --color-wcag-principle-on-green--high: var(--ds-ref-color-white);
+  --color-wcag-principle-green--overlay: var(--ds-ref-color-overlay-40);
+  --color-wcag-principle-green--on-overlay: var(--ds-ref-color-white);
 
-  --color-wcag-theme-blue: #3366DD;
-  --color-wcag-theme-on-blue: #FFFFFF;
-  --color-wcag-theme-red: #990033;
-  --color-wcag-theme-on-red: #FFFFFF;
-  --color-wcag-theme-black: #000000;
-  --color-wcag-theme-on-black: #FFFFFF;
-  --color-wcag-theme-green: #118800;
-  --color-wcag-theme-on-green: #FFFFFF;
-  --color-wcag-theme-yellow: #DDDD00;
-  --color-wcag-theme-on-yellow: #000000;
-  --color-wcag-theme-cyan: #00DDFF;
-  --color-wcag-theme-on-cyan: #000000;
-  --color-wcag-theme-pink: #FF66CC;
-  --color-wcag-theme-on-pink: #000000;
-  --color-wcag-theme-orange: #FF8733;
-  --color-wcag-theme-on-orange: #000000;
+  --color-wcag-principle-gold: var(--ds-ref-color-principle-gold);
+  --color-wcag-principle-gold--dark: var(--ds-ref-color-principle-gold-dark);
+  --color-wcag-principle-on-gold: var(--ds-ref-color-white);
+  --color-wcag-principle-on-gold--high: var(--ds-ref-color-white);
+  --color-wcag-principle-gold--overlay: var(--ds-ref-color-overlay-40);
+  --color-wcag-principle-gold--on-overlay: var(--ds-ref-color-white);
+
+  --color-wcag-theme-blue: var(--ds-ref-color-theme-blue);
+  --color-wcag-theme-on-blue: var(--ds-ref-color-white);
+  --color-wcag-theme-red: var(--ds-ref-color-theme-red);
+  --color-wcag-theme-on-red: var(--ds-ref-color-white);
+  --color-wcag-theme-black: var(--ds-ref-color-theme-black);
+  --color-wcag-theme-on-black: var(--ds-ref-color-white);
+  --color-wcag-theme-green: var(--ds-ref-color-theme-green);
+  --color-wcag-theme-on-green: var(--ds-ref-color-white);
+  --color-wcag-theme-yellow: var(--ds-ref-color-theme-yellow);
+  --color-wcag-theme-on-yellow: var(--ds-ref-color-black);
+  --color-wcag-theme-cyan: var(--ds-ref-color-theme-cyan);
+  --color-wcag-theme-on-cyan: var(--ds-ref-color-black);
+  --color-wcag-theme-pink: var(--ds-ref-color-theme-pink);
+  --color-wcag-theme-on-pink: var(--ds-ref-color-black);
+  --color-wcag-theme-orange: var(--ds-ref-color-theme-orange);
+  --color-wcag-theme-on-orange: var(--ds-ref-color-black);
+}
+
+/* Dark scheme: opt-in via attribute */
+:root[data-color-scheme="dark"] {
+  --ds-sys-color-bg: #0e1116;
+  --ds-sys-color-surface-1: #111723;
+  --ds-sys-color-surface-2: #0f141f;
+  --ds-sys-color-surface-3: #182235;
+
+  --ds-sys-color-text: #e7edf8;
+  --ds-sys-color-text-muted: #b6c2d9;
+
+  --ds-sys-color-border: rgba(231, 237, 248, 0.12);
+  --ds-sys-color-border-strong: rgba(231, 237, 248, 0.18);
+
+  --ds-comp-chip-bg-hover: rgba(231, 237, 248, 0.08);
+  --ds-sys-color-focus-ring: rgba(0, 116, 217, 0.6);
+}
+
+/* Dark scheme: automatic (no explicit light override) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-color-scheme="light"]):not([data-color-scheme="dark"]) {
+    --ds-sys-color-bg: #0e1116;
+    --ds-sys-color-surface-1: #111723;
+    --ds-sys-color-surface-2: #0f141f;
+    --ds-sys-color-surface-3: #182235;
+
+    --ds-sys-color-text: #e7edf8;
+    --ds-sys-color-text-muted: #b6c2d9;
+
+    --ds-sys-color-border: rgba(231, 237, 248, 0.12);
+    --ds-sys-color-border-strong: rgba(231, 237, 248, 0.18);
+
+    --ds-comp-chip-bg-hover: rgba(231, 237, 248, 0.08);
+    --ds-sys-color-focus-ring: rgba(0, 116, 217, 0.6);
+  }
+}
+
+/* High contrast: opt-in via attribute (JS can set based on config) */
+:root[data-high-contrast="true"] {
+  --ds-sys-color-border: var(--ds-sys-color-border-strong);
+  --ds-sys-color-focus-ring: rgba(255, 183, 0, 0.65);
 }

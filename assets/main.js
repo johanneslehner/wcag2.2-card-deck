@@ -1,93 +1,124 @@
 // assets/main.js
 // Main entry point for WCAG 2.2 Card Deck
 
-import { loadJSON } from './data.js';
-import { renderCards, formatDescription } from './render.js';
+import { loadJSONWithLogger } from './data.js';
+import { renderCards } from './render.js';
 import { setupFilters } from './filters.js';
+import { createLogger } from './logger.js';
 
-// Global config variable
-let appConfig = {
+const DEFAULT_CONFIG = {
     languages: {
         hiddenLanguages: [],
-        defaultLanguage: "en"
+        defaultLanguage: "en",
     },
     developer: {
         devMode: false,
-        verboseLogging: false
+        verboseLogging: false,
     },
     ui: {
         cardsPerPage: 0,
         enableAnimation: true,
-        colorScheme: "auto",
-        highContrastMode: false
+        colorScheme: "auto", // "auto" | "light" | "dark"
+        highContrastMode: false,
     },
     features: {
         enableQrCodes: true,
         enableFilters: true,
-        enableSearch: true
+        enableSearch: true,
     },
     cache: {
         enabled: true,
-        duration: 86400
-    }
+        duration: 86400,
+    },
 };
+
+let appConfig = structuredClone(DEFAULT_CONFIG);
+let logger = createLogger({ verbose: false });
+
+function isPlainObject(value) {
+    return Boolean(value) && typeof value === 'object' && value.constructor === Object;
+}
+
+function deepMerge(base, override) {
+    if (!isPlainObject(base) || !isPlainObject(override)) return override ?? base;
+    const out = { ...base };
+    for (const [k, v] of Object.entries(override)) {
+        out[k] = isPlainObject(v) ? deepMerge(base[k] ?? {}, v) : v;
+    }
+    return out;
+}
+
+function applyUiConfig(config) {
+    const root = document.documentElement;
+
+    // color scheme
+    const scheme = config?.ui?.colorScheme || 'auto';
+    if (scheme === 'light' || scheme === 'dark') {
+        root.dataset.colorScheme = scheme;
+    } else {
+        delete root.dataset.colorScheme;
+    }
+
+    // high contrast
+    if (config?.ui?.highContrastMode) {
+        root.dataset.highContrast = 'true';
+    } else {
+        delete root.dataset.highContrast;
+    }
+
+    // motion
+    if (config?.ui?.enableAnimation === false) {
+        root.dataset.reduceMotion = 'true';
+    } else {
+        delete root.dataset.reduceMotion;
+    }
+}
 
 async function loadAppConfig() {
     try {
-        const config = await loadJSON('config/app-config.json');
-        appConfig = { 
-            ...appConfig,
-            ...config
-        };
-        
-        if (appConfig.developer?.verboseLogging) {
-            console.log('App config loaded:', appConfig);
-        }
-        
-        return config;
+        const config = await loadJSONWithLogger('config/app-config.json', logger);
+        appConfig = deepMerge(DEFAULT_CONFIG, config);
+        logger = createLogger({ verbose: Boolean(appConfig.developer?.verboseLogging) });
+        applyUiConfig(appConfig);
+        logger.debug('App config loaded:', appConfig);
+        return appConfig;
     } catch (error) {
-        console.warn('Failed to load app config:', error);
+        logger.warn('Failed to load app config:', error);
+        applyUiConfig(appConfig);
         return appConfig;
     }
 }
 
 async function loadAndRender() {
     try {
-        console.log('Starting data loading...');
         const lang = document.getElementById('language').value;
-        console.log(`Selected language: ${lang}`);
         document.documentElement.setAttribute('lang', lang);
-        
-        console.log('Loading JSON files...');
+
         const [relations, translations, criteria, principles] = await Promise.all([
-            loadJSON('localization/data-relations.json'),
-            loadJSON(`localization/${lang}/translations.json`),
-            loadJSON(`localization/${lang}/success-criteria.json`),
-            loadJSON(`localization/${lang}/principles_guidelines.json`)
+            loadJSONWithLogger('localization/data-relations.json', logger),
+            loadJSONWithLogger(`localization/${lang}/translations.json`, logger),
+            loadJSONWithLogger(`localization/${lang}/success-criteria.json`, logger),
+            loadJSONWithLogger(`localization/${lang}/principles_guidelines.json`, logger),
         ]);
-        
-        console.log('Data loaded:', {
-            relationsEntries: Object.keys(relations).length,
-            translationsEntries: Object.keys(translations).length,
-            criteriaEntries: Object.keys(criteria).length,
-            principlesEntries: Object.keys(principles).length
+        logger.debug('Data loaded:', {
+            relationsEntries: Object.keys(relations || {}).length,
+            translationsEntries: Object.keys(translations || {}).length,
+            criteriaEntries: Object.keys(criteria || {}).length,
+            principlesEntries: Object.keys(principles || {}).length,
         });
         
         // Only show the test panel if devMode is enabled
         if (appConfig.developer?.devMode) {
-            const testEl = document.createElement('div');
+            const testEl = document.createElement('section');
             testEl.id = 'data-loading-test';
-            testEl.style.padding = '20px';
-            testEl.style.margin = '20px';
-            testEl.style.border = '2px solid red';
-            testEl.style.background = '#fff';
-            testEl.style.borderRadius = '5px';
+            testEl.className = 'dev-panel';
+
             testEl.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin-top: 0;">Data Loading Test Panel (Dev Mode)</h3>
-                    <button id="close-test-panel" style="padding: 5px 10px;">×</button>
-                </div>
-                <div style="display: flex; gap: 20px;">
+                <header class="dev-panel__header">
+                    <h3 class="dev-panel__title">Data Loading Test Panel (Dev Mode)</h3>
+                    <button id="close-test-panel" class="dev-panel__close" type="button" aria-label="Close">×</button>
+                </header>
+                <div class="dev-panel__grid">
                     <div>
                         <h4>Data Loading</h4>
                         <p>Relations: ${Object.keys(relations).length} entries</p>
@@ -102,7 +133,7 @@ async function loadAndRender() {
                         <p>UI Settings: ${appConfig.ui?.colorScheme || 'auto'} mode, Animations: ${appConfig.ui?.enableAnimation ? 'On' : 'Off'}</p>
                     </div>
                 </div>
-                <p><small>To disable this panel, set "developer.devMode": false in config/app-config.json or press Ctrl+Shift+D</small></p>
+                <p class="dev-panel__hint"><small>To disable this panel, set "developer.devMode": false in config/app-config.json or press Ctrl+Shift+D</small></p>
             `;
             document.body.insertBefore(testEl, document.getElementById('main-content'));
             
@@ -114,7 +145,7 @@ async function loadAndRender() {
         
         setupFilters({ relations, translations, criteria, principles, renderCards });
     } catch (error) {
-        console.error('Error in loadAndRender:', error);
+        logger.error('Error in loadAndRender:', error);
         document.getElementById('cards-overview').innerHTML = 
             `<div class="no-results-message">
                 <h3>Error loading JSON data</h3>
@@ -162,6 +193,11 @@ async function populateLanguageSelect() {
         option.textContent = labels[lang] || lang;
         select.appendChild(option);
     });
+
+    const preferred = appConfig.languages?.defaultLanguage || 'en';
+    if (langs.includes(preferred)) {
+        select.value = preferred;
+    }
 }
 
 // Debug mode toggle function
@@ -174,7 +210,7 @@ function toggleDevMode() {
     // Toggle the devMode flag
     appConfig.developer.devMode = !appConfig.developer.devMode;
     
-    console.log(`Dev mode ${appConfig.developer.devMode ? 'enabled' : 'disabled'}`);
+    logger.log(`Dev mode ${appConfig.developer.devMode ? 'enabled' : 'disabled'}`);
     
     // Remove existing test panel if it exists
     const existingPanel = document.getElementById('data-loading-test');

@@ -81,15 +81,15 @@ export function renderCards(filtered, translations, criteria, translationMap, pr
             'speech': 'assets/icons/account-voice.svg'
         };
 
-        const roleIconsHtml = card.responsibilities ? card.responsibilities.map(role => 
-            roleIcons[role.toLowerCase()] ? 
-            `<span class="icon-wrapper"><i class="icon" style="--icon-url:url('../../${roleIcons[role.toLowerCase()]}')" aria-label="${translationMap.responsibility[role] || role}"></i></span>` : 
+        const roleIconsHtml = card.responsibilities ? card.responsibilities.map(role =>
+            roleIcons[role.toLowerCase()] ?
+            `<span class="icon-wrapper"><i class="icon" role="img" style="--icon-url:url('${roleIcons[role.toLowerCase()]}')" aria-label="${translationMap.responsibility[role] || role}"></i></span>` :
             ''
         ).join('') : '';
 
-        const disabilityIconsHtml = card.disabilities ? card.disabilities.map(dis => 
-            disabilityIcons[dis.toLowerCase()] ? 
-            `<span class="icon-wrapper"><i class="icon" style="--icon-url:url('../../${disabilityIcons[dis.toLowerCase()]}')" aria-label="${translationMap.disability[dis] || dis}"></i></span>` : 
+        const disabilityIconsHtml = card.disabilities ? card.disabilities.map(dis =>
+            disabilityIcons[dis.toLowerCase()] ?
+            `<span class="icon-wrapper"><i class="icon" role="img" style="--icon-url:url('${disabilityIcons[dis.toLowerCase()]}')" aria-label="${translationMap.disability[dis] || dis}"></i></span>` :
             ''
         ).join('') : '';
 
@@ -110,12 +110,9 @@ export function renderCards(filtered, translations, criteria, translationMap, pr
             seeTogetherHtml = `<h4>${translations.strings.seeTogetherLabel}:</h4> ${card.seeTogether.join(', ')}`;
         }
 
-        let cardClass = `card ${principleClass}`;
-        let titleClass = 'card-title';
         let cardTitle = c.title || t.title || num;
         if (card.obsolete) {
-            cardClass += ' card-obsolete';
-            titleClass += ' card-title-obsolete';
+            // Classes applied to cloned elements below
         }
 
         // Clone card template
@@ -123,7 +120,13 @@ export function renderCards(filtered, translations, criteria, translationMap, pr
         const clone = template.content.cloneNode(true);
 
         // Populate template with data
-        clone.querySelector('.card').classList.add(principleClass);
+        const cardEl = clone.querySelector('.card');
+        cardEl.classList.add(principleClass);
+        if (card.obsolete) {
+            cardEl.classList.add('card-obsolete');
+            clone.querySelector('.card__title')?.classList.add('card-title-obsolete');
+        }
+
         clone.querySelector('.principle-title').textContent = principleTitle;
         clone.querySelector('.card-level').textContent = level;
         
@@ -139,7 +142,11 @@ export function renderCards(filtered, translations, criteria, translationMap, pr
            <h4>${translations.strings?.successCriteria || 'Success Criteria'}</h4>
            ${c.url ? `<a href="${c.url}" target="_blank">${c.url}</a>` : ''}
        `;
-        clone.querySelector('.sc-url-qr').setAttribute('style', '--icon-url:url(../../' + qrPath + ')');
+        const qrEl = clone.querySelector('.sc-url-qr');
+        if (qrEl) {
+            qrEl.classList.add('card-qr');
+            qrEl.setAttribute('style', `--icon-url:url('${qrPath}')`);
+        }
         clone.querySelector('.sc-themes').innerHTML = themeTags;
 
         // Append card to container

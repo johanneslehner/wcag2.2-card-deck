@@ -128,3 +128,56 @@ main {
   -webkit-mask: var(--icon-url) no-repeat center / contain;
           mask: var(--icon-url) no-repeat center / contain;
 }
+
+/* Respect config-driven motion reduction */
+:root[data-reduce-motion="true"] {
+  --transition-fast: 0ms;
+  --transition-medium: 0ms;
+  --transition-slow: 0ms;
+}
+
+/* Dev-mode panel (only visible when enabled via config/shortcut) */
+.dev-panel {
+  margin: var(--space-md);
+  padding: var(--space-md);
+  border: var(--border-width-thin) solid var(--ds-sys-color-border-strong);
+  border-radius: var(--ds-comp-control-radius);
+  background: var(--ds-sys-color-surface-1);
+  box-shadow: var(--shadow-md);
+}
+
+.dev-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.dev-panel__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.dev-panel__close {
+  border: var(--border-width-thin) solid var(--ds-sys-color-border-strong);
+  border-radius: var(--ds-comp-control-radius);
+  background: var(--ds-comp-chip-bg);
+  color: var(--ds-sys-color-text);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.dev-panel__close:hover {
+  background: var(--ds-comp-chip-bg-hover);
+}
+
+.dev-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-lg);
+}
+
+.dev-panel__hint {
+  margin: var(--space-md) 0 0;
+  color: var(--ds-sys-color-text-muted);
+}

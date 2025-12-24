@@ -6,7 +6,7 @@
 header {
   flex: 0 1 auto;
   z-index: 100;
-  background: var(--color-background-primary);
+  background: var(--ds-comp-header-bg);
   box-shadow: var(--shadow-md);
   padding: var(--space-md);
 }
@@ -32,16 +32,17 @@ header {
 
 #language {
   padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-md);
-  border: var(--border-width-thin) solid var(--color-gray-400);
-  background: var(--color-background-primary);
+  border-radius: var(--ds-comp-control-radius);
+  border: var(--border-width-thin) solid var(--ds-comp-input-border);
+  background: var(--ds-comp-input-bg);
   font-size: var(--font-size-base);
   color: var(--color-text-primary);
 }
 
 #language:focus {
-  outline: var(--border-width-thin) solid var(--color-blue-600);
-  border-color: var(--color-blue-600);
+  outline: none;
+  border-color: var(--ds-comp-input-border-focus);
+  box-shadow: var(--focus-ring);
 }
 
 /* Search bar */
@@ -57,34 +58,37 @@ header {
   flex: 1;
   padding: var(--space-xs) var(--space-sm);
   font-size: var(--font-size-base);
-  border-radius: var(--radius-md);
-  border: var(--border-width-thin) solid var(--color-gray-400);
+  border-radius: var(--ds-comp-control-radius);
+  border: var(--border-width-thin) solid var(--ds-comp-input-border);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  background: var(--ds-comp-input-bg);
+  color: var(--color-text-primary);
 }
 
 #search-bar:focus {
   outline: none;
-  border-color: var(--color-blue-600);
-  box-shadow: 0 0 0 2px rgba(0, 116, 217, 0.2);
+  border-color: var(--ds-comp-input-border-focus);
+  box-shadow: var(--focus-ring);
 }
 
 #search-clear-btn {
+  display: none;
   margin-left: var(--space-sm);
   padding: var(--space-xs) var(--space-md);
   font-size: var(--font-size-base);
-  border-radius: var(--radius-md);
-  border: var(--border-width-thin) solid var(--color-gray-400);
-  background: var(--color-gray-100);
+  border-radius: var(--ds-comp-control-radius);
+  border: var(--border-width-thin) solid var(--ds-comp-input-border);
+  background: var(--ds-comp-chip-bg);
   color: var(--color-text-primary);
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
 #search-clear-btn:hover {
-  background: var(--color-gray-200);
+  background: var(--ds-comp-chip-bg-hover);
 }
 
 #search-clear-btn:active {
-  background: var(--color-gray-300);
+  background: var(--ds-sys-color-border-strong);
 }
 
 .search-helper {
