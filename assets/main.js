@@ -2,8 +2,9 @@
 // Main entry point for WCAG 2.2 Card Deck
 
 import { loadJSON } from './data.js';
-import { renderCards, formatDescription } from './render.js';
+import { renderCards } from './render.js';
 import { setupFilters } from './filters.js';
+import { createElement } from './utils.js';
 
 // Global config variable
 let appConfig = {
@@ -51,6 +52,75 @@ async function loadAppConfig() {
     }
 }
 
+function renderDevPanel(relations, translations, criteria, principles, lang) {
+    const existingPanel = document.getElementById('data-loading-test');
+    if (existingPanel) existingPanel.remove();
+
+    if (!appConfig.developer?.devMode) return;
+
+    const panelContent = [
+        createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }, [
+            createElement('h3', { style: { marginTop: '0' } }, 'Data Loading Test Panel (Dev Mode)'),
+            createElement('button', { id: 'close-test-panel', style: { padding: '5px 10px' }, onclick: () => {
+                document.getElementById('data-loading-test').style.display = 'none';
+            } }, '×')
+        ]),
+        createElement('div', { style: { display: 'flex', gap: '20px' } }, [
+            createElement('div', {}, [
+                createElement('h4', {}, 'Data Loading'),
+                createElement('p', {}, `Relations: ${Object.keys(relations).length} entries`),
+                createElement('p', {}, `Translations: ${Object.keys(translations).length} entries`),
+                createElement('p', {}, `Criteria: ${Object.keys(criteria).length} entries`),
+                createElement('p', {}, `Principles: ${Object.keys(principles).length} entries`)
+            ]),
+            createElement('div', {}, [
+                createElement('h4', {}, 'Active Configuration'),
+                createElement('p', {}, `Language: ${lang} (Default: ${appConfig.languages?.defaultLanguage || 'en'})`),
+                createElement('p', {}, `Hidden Languages: ${(appConfig.languages?.hiddenLanguages || []).join(', ') || 'None'}`),
+                createElement('p', {}, `UI Settings: ${appConfig.ui?.colorScheme || 'auto'} mode, Animations: ${appConfig.ui?.enableAnimation ? 'On' : 'Off'}`)
+            ])
+        ]),
+        createElement('p', {}, [
+            createElement('small', {}, 'To disable this panel, set "developer.devMode": false in config/app-config.json or press Ctrl+Shift+D')
+        ])
+    ];
+
+    const testEl = createElement('div', {
+        id: 'data-loading-test',
+        style: {
+            padding: '20px',
+            margin: '20px',
+            border: '2px solid red',
+            background: '#fff',
+            borderRadius: '5px'
+        }
+    }, panelContent);
+
+    document.body.insertBefore(testEl, document.getElementById('main-content'));
+}
+
+function renderError(error) {
+    console.error('Error in loadAndRender:', error);
+    const container = document.getElementById('cards-overview');
+    container.innerHTML = '';
+    
+    container.appendChild(createElement('div', { className: 'no-results-message' }, [
+        createElement('h3', {}, 'Error loading JSON data'),
+        createElement('p', {}, `Details: ${error.message || 'Unknown error'}`),
+        createElement('p', {}, [
+            createElement('strong', {}, 'Solution:'),
+            ' This is most likely due to CORS restrictions when loading files directly from the filesystem.'
+        ]),
+        createElement('p', {}, 'Please use one of the following methods to run the application:'),
+        createElement('ol', {}, [
+            createElement('li', {}, [createElement('strong', {}, 'Python server:'), ' Run ', createElement('code', {}, 'python server.py'), ' in the terminal']),
+            createElement('li', {}, [createElement('strong', {}, 'Node.js server:'), ' Run ', createElement('code', {}, 'node server.js'), ' in the terminal']),
+            createElement('li', {}, [createElement('strong', {}, 'VS Code:'), ' Use the Live Server extension'])
+        ]),
+        createElement('p', {}, ['Then access the application at ', createElement('a', { href: 'http://localhost:8000' }, 'http://localhost:8000')])
+    ]));
+}
+
 async function loadAndRender() {
     try {
         console.log('Starting data loading...');
@@ -73,61 +143,11 @@ async function loadAndRender() {
             principlesEntries: Object.keys(principles).length
         });
         
-        // Only show the test panel if devMode is enabled
-        if (appConfig.developer?.devMode) {
-            const testEl = document.createElement('div');
-            testEl.id = 'data-loading-test';
-            testEl.style.padding = '20px';
-            testEl.style.margin = '20px';
-            testEl.style.border = '2px solid red';
-            testEl.style.background = '#fff';
-            testEl.style.borderRadius = '5px';
-            testEl.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin-top: 0;">Data Loading Test Panel (Dev Mode)</h3>
-                    <button id="close-test-panel" style="padding: 5px 10px;">×</button>
-                </div>
-                <div style="display: flex; gap: 20px;">
-                    <div>
-                        <h4>Data Loading</h4>
-                        <p>Relations: ${Object.keys(relations).length} entries</p>
-                        <p>Translations: ${Object.keys(translations).length} entries</p>
-                        <p>Criteria: ${Object.keys(criteria).length} entries</p>
-                        <p>Principles: ${Object.keys(principles).length} entries</p>
-                    </div>
-                    <div>
-                        <h4>Active Configuration</h4>
-                        <p>Language: ${lang} (Default: ${appConfig.languages?.defaultLanguage || 'en'})</p>
-                        <p>Hidden Languages: ${(appConfig.languages?.hiddenLanguages || []).join(', ') || 'None'}</p>
-                        <p>UI Settings: ${appConfig.ui?.colorScheme || 'auto'} mode, Animations: ${appConfig.ui?.enableAnimation ? 'On' : 'Off'}</p>
-                    </div>
-                </div>
-                <p><small>To disable this panel, set "developer.devMode": false in config/app-config.json or press Ctrl+Shift+D</small></p>
-            `;
-            document.body.insertBefore(testEl, document.getElementById('main-content'));
-            
-            // Add event listener to close button
-            document.getElementById('close-test-panel').addEventListener('click', () => {
-                document.getElementById('data-loading-test').style.display = 'none';
-            });
-        }
+        renderDevPanel(relations, translations, criteria, principles, lang);
         
         setupFilters({ relations, translations, criteria, principles, renderCards });
     } catch (error) {
-        console.error('Error in loadAndRender:', error);
-        document.getElementById('cards-overview').innerHTML = 
-            `<div class="no-results-message">
-                <h3>Error loading JSON data</h3>
-                <p>Details: ${error.message || 'Unknown error'}</p>
-                <p><strong>Solution:</strong> This is most likely due to CORS restrictions when loading files directly from the filesystem.</p>
-                <p>Please use one of the following methods to run the application:</p>
-                <ol>
-                    <li><strong>Python server:</strong> Run <code>python server.py</code> in the terminal</li>
-                    <li><strong>Node.js server:</strong> Run <code>node server.js</code> in the terminal</li>
-                    <li><strong>VS Code:</strong> Use the Live Server extension</li>
-                </ol>
-                <p>Then access the application at <a href="http://localhost:8000">http://localhost:8000</a></p>
-            </div>`;
+        renderError(error);
     }
 }
 
@@ -175,12 +195,6 @@ function toggleDevMode() {
     appConfig.developer.devMode = !appConfig.developer.devMode;
     
     console.log(`Dev mode ${appConfig.developer.devMode ? 'enabled' : 'disabled'}`);
-    
-    // Remove existing test panel if it exists
-    const existingPanel = document.getElementById('data-loading-test');
-    if (existingPanel) {
-        existingPanel.remove();
-    }
     
     // Reload the application
     loadAndRender();

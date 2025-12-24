@@ -4,31 +4,68 @@
  */
 
 :root {
-  /* Spacing scale */
-  --space-none: 0;
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-2xl: 3rem;     /* 48px */
-  --space-3xl: 4rem;     /* 64px */
+  /* ==========================================================================
+     1. PRIMITIVE TOKENS (Scale)
+     ========================================================================== */
+  --spacing-base: 0.25rem; /* 4px foundation */
   
-  /* Specific layout spacing */
-  --layout-spacing-sm: var(--space-sm);
-  --layout-spacing-md: var(--space-md);
-  --layout-spacing-lg: var(--space-lg);
-  --layout-spacing-xl: var(--space-xl);
+  --spacing-0: 0;
+  --spacing-1: var(--spacing-base);           /* 4px */
+  --spacing-2: calc(var(--spacing-base) * 2); /* 8px */
+  --spacing-3: calc(var(--spacing-base) * 3); /* 12px */
+  --spacing-4: calc(var(--spacing-base) * 4); /* 16px */
+  --spacing-5: calc(var(--spacing-base) * 5); /* 20px */
+  --spacing-6: calc(var(--spacing-base) * 6); /* 24px */
+  --spacing-8: calc(var(--spacing-base) * 8); /* 32px */
+  --spacing-10: calc(var(--spacing-base) * 10); /* 40px */
+  --spacing-12: calc(var(--spacing-base) * 12); /* 48px */
+  --spacing-16: calc(var(--spacing-base) * 16); /* 64px */
   
-  /* Component specific spacing */
-  --card-spacing: var(--space-md);
-  --card-margin-bottom: var(--space-xl);
-  --card-padding: var(--space-md);
-  --card__header-padding: var(--space-md) var(--space-md) var(--space-sm);
-  --card-body-padding: 0 var(--space-md);
-  --card__footer-padding: var(--space-md);
+  /* Legacy/Compatibility mapping */
+  --space-none: var(--spacing-0);
+  --space-xs: var(--spacing-1);
+  --space-sm: var(--spacing-2);
+  --space-md: var(--spacing-4);
+  --space-lg: var(--spacing-6);
+  --space-xl: var(--spacing-8);
+  --space-2xl: var(--spacing-12);
+  --space-3xl: var(--spacing-16);
+
+  /* ==========================================================================
+     2. SEMANTIC TOKENS (Usage)
+     ========================================================================== */
+  
+  /* Layout */
+  --spacing-layout-gutter-sm: var(--spacing-2);
+  --spacing-layout-gutter-md: var(--spacing-4);
+  --spacing-layout-gutter-lg: var(--spacing-6);
+  --spacing-layout-section: var(--spacing-12);
+
+  /* Components */
+  --spacing-component-gap-xs: var(--spacing-1);
+  --spacing-component-gap-sm: var(--spacing-2);
+  --spacing-component-gap-md: var(--spacing-4);
+  
+  --spacing-component-padding-sm: var(--spacing-2);
+  --spacing-component-padding-md: var(--spacing-4);
+  --spacing-component-padding-lg: var(--spacing-6);
+
+  /* Specific Component Mappings */
+  --card-spacing: var(--spacing-component-gap-md);
+  --card-margin-bottom: var(--spacing-layout-section); /* or spacing-8 */
+  --card-padding: var(--spacing-component-padding-md);
+  
+  /* Complex values (shorthands) */
+  --card__header-padding: var(--spacing-4) var(--spacing-4) var(--spacing-2);
+  --card-body-padding: 0 var(--spacing-4);
+  --card__footer-padding: var(--spacing-4);
   
   /* Filter spacing */
-  --filter-group-spacing: var(--space-lg);
-  --filter-item-spacing: var(--space-sm);
+  --filter-group-spacing: var(--spacing-6);
+  --filter-item-spacing: var(--spacing-2);
+
+  --layout-spacing-sm: var(--spacing-2);
+  --layout-spacing-md: var(--spacing-4);
+  --layout-spacing-lg: var(--spacing-6);
+  --layout-spacing-xl: var(--spacing-8);
 }

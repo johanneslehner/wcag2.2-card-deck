@@ -4,28 +4,79 @@
  */
 
 :root {
-  /* Font families */
-  --font-family-base: 'Segoe UI', Arial, sans-serif;
-  --font-family-headings: 'Segoe UI', Arial, sans-serif;
+  /* ==========================================================================
+     1. PRIMITIVE TOKENS (Scale)
+     ========================================================================== */
   
-  /* Font sizes */
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-md: 1.125rem;   /* 18px */
-  --font-size-lg: 1.25rem;    /* 20px */
-  --font-size-xl: 1.5rem;     /* 24px */
-  --font-size-2xl: 1.75rem;   /* 28px */
-  --font-size-3xl: 2rem;      /* 32px */
-  
-  /* Line heights */
-  --line-height-tight: 1.2;
-  --line-height-base: 1.5;
-  --line-height-relaxed: 1.75;
-  
-  /* Font weights */
-  --font-weight-normal: 400;
+  /* Families */
+  --font-family-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-family-mono: Consolas, 'Courier New', monospace;
+
+  /* Weights */
+  --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+
+  /* Size Scale */
+  --font-size-scale-xs: 0.75rem;    /* 12px */
+  --font-size-scale-sm: 0.875rem;   /* 14px */
+  --font-size-scale-base: 1rem;     /* 16px */
+  --font-size-scale-md: 1.125rem;   /* 18px */
+  --font-size-scale-lg: 1.25rem;    /* 20px */
+  --font-size-scale-xl: 1.5rem;     /* 24px */
+  --font-size-scale-2xl: 1.75rem;   /* 28px */
+  --font-size-scale-3xl: 2rem;      /* 32px */
+
+  /* Line Heights */
+  --line-height-1: 1;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.75;
+
+  /* Legacy Compatibility */
+  --font-family-base: var(--font-family-sans);
+  --font-family-headings: var(--font-family-sans);
+  
+  --font-size-xs: var(--font-size-scale-xs);
+  --font-size-sm: var(--font-size-scale-sm);
+  --font-size-base: var(--font-size-scale-base);
+  --font-size-md: var(--font-size-scale-md);
+  --font-size-lg: var(--font-size-scale-lg);
+  --font-size-xl: var(--font-size-scale-xl);
+  --font-size-2xl: var(--font-size-scale-2xl);
+  --font-size-3xl: var(--font-size-scale-3xl);
+  
+  --line-height-base: var(--line-height-normal);
+  --line-height-relaxed: var(--line-height-loose);
+  
+  --font-weight-normal: var(--font-weight-regular);
+
+  /* ==========================================================================
+     2. SEMANTIC TOKENS (Usage)
+     ========================================================================== */
+
+  /* Body */
+  --text-body-family: var(--font-family-sans);
+  --text-body-size: var(--font-size-scale-base);
+  --text-body-weight: var(--font-weight-regular);
+  --text-body-line-height: var(--line-height-normal);
+
+  /* Headings */
+  --text-heading-family: var(--font-family-sans);
+  --text-heading-weight: var(--font-weight-bold);
+  --text-heading-line-height: var(--line-height-tight);
+
+  --text-h1-size: var(--font-size-scale-3xl);
+  --text-h2-size: var(--font-size-scale-2xl);
+  --text-h3-size: var(--font-size-scale-xl);
+  --text-h4-size: var(--font-size-scale-lg);
+  
+  /* Small/Utility */
+  --text-small-size: var(--font-size-scale-sm);
+  --text-tiny-size: var(--font-size-scale-xs);
+  
+  /* Components */
+  --text-button-weight: var(--font-weight-medium);
+  --text-label-weight: var(--font-weight-medium);
 }

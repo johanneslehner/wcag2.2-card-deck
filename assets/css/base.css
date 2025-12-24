@@ -18,11 +18,11 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: var(--font-family-base);
-  font-size: 16px;
-  line-height: var(--line-height-base);
+  font-family: var(--text-body-family);
+  font-size: 16px; /* Base for rems */
+  line-height: var(--text-body-line-height);
   color: var(--color-text-primary);
-  background-color: var(--color-background-primary);
+  background-color: var(--color-bg-primary);
 }
 
 body {
@@ -33,27 +33,27 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-headings);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
+  font-family: var(--text-heading-family);
+  font-weight: var(--text-heading-weight);
+  line-height: var(--text-heading-line-height);
   margin-top: 0;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--spacing-layout-gutter-md);
 }
 
 h1 {
-  font-size: var(--font-size-3xl);
+  font-size: var(--text-h1-size);
 }
 
 h2 {
-  font-size: var(--font-size-2xl);
+  font-size: var(--text-h2-size);
 }
 
 h3 {
-  font-size: var(--font-size-xl);
+  font-size: var(--text-h3-size);
 }
 
 h4 {
-  font-size: var(--font-size-lg);
+  font-size: var(--text-h4-size);
 }
 
 p {
@@ -93,12 +93,12 @@ button {
   position: absolute;
   left: 0;
   top: 0;
-  background: var(--color-blue-600);
-  color: var(--color-white);
-  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primitive-blue-600); /* Keep as primitive or use a specific interactive token */
+  color: var(--color-text-inverse);
+  padding: var(--spacing-component-padding-sm) var(--spacing-component-padding-md);
   z-index: 1000;
   transform: translateY(-100%);
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-fast, 0.2s ease);
 }
 
 .skip-link:focus {
@@ -110,10 +110,11 @@ main {
   display: flex;
   overflow: hidden;
 }
+
 /* Results area layout */
 .results-area {
   flex: 1 1 100%;
-  padding: var(--space-md);
+  padding: var(--spacing-layout-gutter-md);
   height: 100%;
   overflow-y: auto;
 }

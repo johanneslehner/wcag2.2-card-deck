@@ -4,86 +4,136 @@
  */
 
 :root {
-  /* Global color tokens */
-  --color-red-600: #c00;
-  --color-red-700: #a00;
-  --color-blue-600: #0074d9;
-  --color-blue-700: #0060b3;
-  --color-green-600: #2ecc40;
-  --color-green-700: #25a934;
-  --color-yellow-500: #ffb700;
-  --color-yellow-600: #e6a500;
+  /* ==========================================================================
+     1. PRIMITIVE TOKENS (Global)
+     ========================================================================== */
   
-  /* Neutral colors */
-  --color-white: #fff;
-  --color-gray-50: #fafafa;
-  --color-gray-100: #f5f5f5;
-  --color-gray-200: #eee;
-  --color-gray-300: #ddd;
-  --color-gray-400: #ccc;
-  --color-gray-500: #999;
-  --color-gray-600: #666;
-  --color-gray-700: #444;
-  --color-gray-800: #333;
-  --color-gray-900: #222;
-  --color-black: #000;
+  /* Brand/Principle Colors */
+  --color-primitive-red-600: #c00;
+  --color-primitive-red-700: #a00;
+  --color-primitive-blue-600: #0074d9;
+  --color-primitive-blue-700: #0060b3;
+  --color-primitive-green-600: #2ecc40;
+  --color-primitive-green-700: #25a934;
+  --color-primitive-yellow-500: #ffb700;
+  --color-primitive-yellow-600: #e6a500;
+
+  /* Neutrals */
+  --color-primitive-white: #fff;
+  --color-primitive-gray-50: #fafafa;
+  --color-primitive-gray-100: #f5f5f5;
+  --color-primitive-gray-200: #eee;
+  --color-primitive-gray-300: #ddd;
+  --color-primitive-gray-400: #ccc;
+  --color-primitive-gray-500: #999;
+  --color-primitive-gray-600: #666;
+  --color-primitive-gray-700: #444;
+  --color-primitive-gray-800: #333;
+  --color-primitive-gray-900: #222;
+  --color-primitive-black: #000;
+
+  /* WCAG Specific Palette (Legacy/Reference) */
+  --color-primitive-wcag-red: #B60000;
+  --color-primitive-wcag-red-dark: #7A0000;
+  --color-primitive-wcag-blue: #1651A9;
+  --color-primitive-wcag-blue-dark: #0E346C;
+  --color-primitive-wcag-green: #186312;
+  --color-primitive-wcag-green-dark: #11450D;
+  --color-primitive-wcag-gold: #535035;
+  --color-primitive-wcag-gold-dark: #323020;
+
+  /* ==========================================================================
+     2. SEMANTIC TOKENS (Usage)
+     ========================================================================== */
+
+  /* Text */
+  --color-text-primary: var(--color-primitive-gray-800);
+  --color-text-secondary: var(--color-primitive-gray-600);
+  --color-text-tertiary: var(--color-primitive-gray-500);
+  --color-text-inverse: var(--color-primitive-white);
+  --color-text-link: var(--color-primitive-blue-600);
+  --color-text-link-hover: var(--color-primitive-blue-700);
+
+  /* Backgrounds */
+  --color-bg-primary: var(--color-primitive-white);
+  --color-bg-secondary: var(--color-primitive-gray-50);
+  --color-bg-tertiary: var(--color-primitive-gray-100);
+  --color-bg-inverse: var(--color-primitive-gray-900);
   
-  /* Semantic colors */
-  --color-text-primary: var(--color-gray-800);
-  --color-text-secondary: var(--color-gray-600);
-  --color-text-on-dark: var(--color-white);
-  --color-background-primary: var(--color-white);
-  --color-background-secondary: var(--color-gray-50);
-  --color-border: var(--color-gray-200);
+  /* Borders */
+  --color-border-subtle: var(--color-primitive-gray-100);
+  --color-border-default: var(--color-primitive-gray-200);
+  --color-border-strong: var(--color-primitive-gray-400);
+
+  /* Principles (Semantic Mapping) */
+  /* Principle 1: Perceivable (Red) */
+  --color-principle-perceivable: var(--color-primitive-red-600);
+  --color-principle-perceivable-dark: var(--color-primitive-red-700);
+  --color-principle-perceivable-bg: var(--color-primitive-white); /* Update if needed */
   
-  /* WCAG Principle Colors */
-  --color-principle-1: var(--color-red-600);    /* Perceivable - Red */
-  --color-principle-2: var(--color-blue-600);   /* Operable - Blue */
-  --color-principle-3: var(--color-green-600);  /* Understandable - Green */
-  --color-principle-4: var(--color-yellow-500); /* Robust - Gold */
+  /* Principle 2: Operable (Blue) */
+  --color-principle-operable: var(--color-primitive-blue-600);
+  --color-principle-operable-dark: var(--color-primitive-blue-700);
 
-  --color-wcag-principle-red: #B60000;
-  --color-wcag-principle-red--dark: #7A0000;
-  --color-wcag-principle-on-red: #FFFFFF;
-  --color-wcag-principle-on-red--high: #FFFFFF;
-  --color-wcag-principle-red--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-red--on-overlay: #FFFFFF;
-  
-  --color-wcag-principle-blue: #1651A9;
-  --color-wcag-principle-blue--dark: #0E346C;
-  --color-wcag-principle-on-blue: #FFFFFF;
-  --color-wcag-principle-on-blue--high: #FFFFFF;
-  --color-wcag-principle-blue--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-blue--on-overlay: #FFFFFF;
+  /* Principle 3: Understandable (Green) */
+  --color-principle-understandable: var(--color-primitive-green-600);
+  --color-principle-understandable-dark: var(--color-primitive-green-700);
 
-  --color-wcag-principle-green: #186312;
-  --color-wcag-principle-green--dark: #11450D;
-  --color-wcag-principle-on-green: #FFFFFF;
-  --color-wcag-principle-on-green--high: #FFFFFF;
-  --color-wcag-principle-green--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-green--on-overlay: #FFFFFF;
+  /* Principle 4: Robust (Yellow/Gold) */
+  --color-principle-robust: var(--color-primitive-yellow-500);
+  --color-principle-robust-dark: var(--color-primitive-yellow-600);
 
-  --color-wcag-principle-gold: #535035;
-  --color-wcag-principle-gold--dark: #323020;
-  --color-wcag-principle-on-gold: #FFFFFF;
-  --color-wcag-principle-on-gold--high: #FFFFFF;
-  --color-wcag-principle-gold--overlay: rgba(0, 0, 0, 0.40);
-  --color-wcag-principle-gold--on-overlay: #FFFFFF;
+  /* Status */
+  --color-status-error: var(--color-primitive-red-600);
+  --color-status-success: var(--color-primitive-green-600);
+  --color-status-warning: var(--color-primitive-yellow-500);
+  --color-status-info: var(--color-primitive-blue-600);
 
+  /* WCAG Theme Aliases (Kept for backward compatibility but mapped to primitives) */
   --color-wcag-theme-blue: #3366DD;
-  --color-wcag-theme-on-blue: #FFFFFF;
+  --color-wcag-theme-on-blue: var(--color-primitive-white);
   --color-wcag-theme-red: #990033;
-  --color-wcag-theme-on-red: #FFFFFF;
-  --color-wcag-theme-black: #000000;
-  --color-wcag-theme-on-black: #FFFFFF;
+  --color-wcag-theme-on-red: var(--color-primitive-white);
+  --color-wcag-theme-black: var(--color-primitive-black);
+  --color-wcag-theme-on-black: var(--color-primitive-white);
   --color-wcag-theme-green: #118800;
-  --color-wcag-theme-on-green: #FFFFFF;
+  --color-wcag-theme-on-green: var(--color-primitive-white);
   --color-wcag-theme-yellow: #DDDD00;
-  --color-wcag-theme-on-yellow: #000000;
+  --color-wcag-theme-on-yellow: var(--color-primitive-black);
   --color-wcag-theme-cyan: #00DDFF;
-  --color-wcag-theme-on-cyan: #000000;
+  --color-wcag-theme-on-cyan: var(--color-primitive-black);
   --color-wcag-theme-pink: #FF66CC;
-  --color-wcag-theme-on-pink: #000000;
+  --color-wcag-theme-on-pink: var(--color-primitive-black);
   --color-wcag-theme-orange: #FF8733;
-  --color-wcag-theme-on-orange: #000000;
+  --color-wcag-theme-on-orange: var(--color-primitive-black);
+
+  /* Old variable mapping for compatibility during refactor */
+  --color-red-600: var(--color-primitive-red-600);
+  --color-red-700: var(--color-primitive-red-700);
+  --color-blue-600: var(--color-primitive-blue-600);
+  --color-blue-700: var(--color-primitive-blue-700);
+  --color-green-600: var(--color-primitive-green-600);
+  --color-green-700: var(--color-primitive-green-700);
+  --color-yellow-500: var(--color-primitive-yellow-500);
+  --color-yellow-600: var(--color-primitive-yellow-600);
+  
+  --color-white: var(--color-primitive-white);
+  --color-gray-50: var(--color-primitive-gray-50);
+  --color-gray-100: var(--color-primitive-gray-100);
+  --color-gray-200: var(--color-primitive-gray-200);
+  --color-gray-300: var(--color-primitive-gray-300);
+  --color-gray-400: var(--color-primitive-gray-400);
+  --color-gray-500: var(--color-primitive-gray-500);
+  --color-gray-600: var(--color-primitive-gray-600);
+  --color-gray-700: var(--color-primitive-gray-700);
+  --color-gray-800: var(--color-primitive-gray-800);
+  --color-gray-900: var(--color-primitive-gray-900);
+  --color-black: var(--color-primitive-black);
+  
+  --color-principle-1: var(--color-principle-perceivable);
+  --color-principle-2: var(--color-principle-operable);
+  --color-principle-3: var(--color-principle-understandable);
+  --color-principle-4: var(--color-principle-robust);
+
+  --color-border: var(--color-border-default);
 }

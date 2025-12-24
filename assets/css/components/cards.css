@@ -3,11 +3,9 @@
  * Cards Component
  */
 
-
-
 /* Helper info */
 .helper-info {
-  margin: var(--space-md) 0;
+  margin: var(--spacing-layout-gutter-md) 0;
   font-weight: var(--font-weight-bold);
 }
 
@@ -15,8 +13,8 @@
 #cards-overview {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-xl);
-  margin: var(--space-md) 0;
+  gap: var(--spacing-layout-gutter-xl);
+  margin: var(--spacing-layout-gutter-md) 0;
 }
 
 @media (min-width: 1200px) {
@@ -27,22 +25,25 @@
 
 /* Individual card styling */
 .card {
-  border-radius: var(--radius-xl);
+  /* Defined in base.css or variables, assuming radius tokens exist there */
+  border-radius: var(--radius-xl, 16px); 
   border: none;
-  box-shadow: var(--shadow-md);
-  background: var(--card-background-color, var(--color-background-primary));
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+  
+  background: var(--card-background-color, var(--color-bg-primary));
   color: var(--card__content-color, var(--color-text-primary));
+  
   margin-bottom: var(--card-margin-bottom);
-  font-family: var(--font-family-base);
+  font-family: var(--font-family-sans);
   overflow: hidden;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast, 0.2s ease), box-shadow var(--transition-fast, 0.2s ease);
   display: flex;
   flex-direction: column;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
 }
 
 /* Card header */
@@ -55,14 +56,15 @@
 /* Principle styling in card */
 .card__principle {
   padding: 12px 16px;
-  border-radius: var(--radius-xl) 0 var(--radius-xl) 0;
+  border-radius: var(--radius-xl, 16px) 0 var(--radius-xl, 16px) 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  background: var(--card-principle-background-color, var(--color-wcag-principle-blue--overlay));
+  gap: var(--spacing-component-gap-sm);
+  
+  background: var(--card-principle-background-color, rgba(0, 0, 0, 0.1));
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-scale-md);
   --icon-size: 24px;
 }
 
@@ -73,12 +75,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-background-primary);
+  background: var(--color-bg-primary);
   color: var(--color-text-primary);
-  border-radius: var(--radius-md);
-  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--spacing-component-padding-sm);
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-scale-base);
   margin: 12px 12px 0 0;
 }
 
@@ -95,18 +97,18 @@
 
 /* Number and title in card */
 .card-number-title {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-scale-xl);
   font-weight: var(--font-weight-bold);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--spacing-component-gap-xs);
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--spacing-component-gap-sm);
 }
 
 /* Icons in card */
 .card-icons {
   display: inline-flex;
-  gap: var(--space-xs);
+  gap: var(--spacing-component-gap-xs);
   vertical-align: middle;
 }
 
@@ -124,16 +126,16 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 12px 16px;
-  background: var(--color-gray-50);
-  border-top: var(--border-width-thin) solid var(--color-gray-200);
-  font-size: var(--font-size-sm);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-default);
+  font-size: var(--font-size-scale-sm);
 }
 
 /* Card description */
 .card-description {
-  margin: var(--space-md) 0;
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-relaxed);
+  margin: var(--spacing-layout-gutter-md) 0;
+  font-size: var(--font-size-scale-base);
+  line-height: var(--line-height-loose);
 }
 
 /* Card title */
@@ -157,7 +159,7 @@
 .icon-list .icon-wrapper {
   display: flex;
   padding: 4px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 4px);
   --icon-size: 20px;
   background: var(--card-title-color);
 }
@@ -169,8 +171,8 @@
 
 /* Success criteria text */
 .card-success {
-  margin: var(--space-md) 0 var(--space-sm) 0;
-  font-size: var(--font-size-sm);
+  margin: var(--spacing-layout-gutter-md) 0 var(--spacing-component-gap-sm) 0;
+  font-size: var(--font-size-scale-sm);
 }
 
 /* QR code row */
@@ -178,7 +180,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-top: var(--space-md);
+  margin-top: var(--spacing-layout-gutter-md);
 }
 
 /* QR code */
@@ -188,12 +190,12 @@
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
 }
 
-/* Principle specific colors */
+/* Principle specific colors - Using new Semantic Tokens */
 /* Principle 1: Perceivable */
 .card--perceivable {
-  --card-background-color: var(--color-wcag-principle-red);
-  --card-title-color: var(--color-wcag-principle-on-red);
-  --card__content-color: var(--color-wcag-principle-on-red);
+  --card-background-color: var(--color-principle-perceivable);
+  --card-title-color: var(--color-text-inverse);
+  --card__content-color: var(--color-text-inverse);
   --icon-url: url('../icons/eye-off-alt.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
@@ -202,9 +204,9 @@
 
 /* Principle 2: Operable */
 .card--operable {
-  --card-background-color: var(--color-wcag-principle-blue);
-  --card-title-color: var(--color-wcag-principle-on-blue);
-  --card__content-color: var(--color-wcag-principle-on-blue);
+  --card-background-color: var(--color-principle-operable);
+  --card-title-color: var(--color-text-inverse);
+  --card__content-color: var(--color-text-inverse);
   --icon-url: url('../icons/cog.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
@@ -213,9 +215,9 @@
 
 /* Principle 3: Understandable */
 .card--understandable {
-  --card-background-color: var(--color-wcag-principle-green);
-  --card-title-color: var(--color-wcag-principle-on-green);
-  --card__content-color: var(--color-wcag-principle-on-green);
+  --card-background-color: var(--color-principle-understandable);
+  --card-title-color: var(--color-text-inverse);
+  --card__content-color: var(--color-text-inverse);
   --icon-url: url('../icons/brain.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
@@ -224,9 +226,9 @@
 
 /* Principle 4: Robust */
 .card--robust {
-  --card-background-color: var(--color-wcag-principle-gold);
-  --card-title-color: var(--color-wcag-principle-on-gold);
-  --card__content-color: var(--color-wcag-principle-on-gold);
+  --card-background-color: var(--color-principle-robust);
+  --card-title-color: var(--color-text-inverse);
+  --card__content-color: var(--color-text-inverse);
   --icon-url: url('../icons/responsive.svg');
   --card-icon-color: var(--card-background-color);
   --card-icon-background-color: var(--card-title-color);
@@ -244,15 +246,15 @@
 
 /* No results message */
 .no-results-message {
-  padding: var(--space-xl);
+  padding: var(--spacing-layout-gutter-xl);
   text-align: center;
-  color: var(--color-red-600);
-  font-size: var(--font-size-lg);
+  color: var(--color-status-error);
+  font-size: var(--font-size-scale-lg);
 }
 
 /* Back to top navigation */
 .back-to-top-nav {
-  margin: var(--space-xl) 0;
+  margin: var(--spacing-layout-gutter-xl) 0;
   text-align: center;
 }
 
@@ -264,22 +266,21 @@
 
 .back-to-top-nav a {
   display: inline-block;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-gray-100);
+  padding: var(--spacing-component-padding-sm) var(--spacing-component-padding-md);
+  background: var(--color-bg-tertiary);
   color: var(--color-text-primary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md, 8px);
   text-decoration: none;
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast, 0.2s ease);
 }
 
 .back-to-top-nav a:hover {
-  background: var(--color-gray-200);
+  background: var(--color-border-default);
   text-decoration: none;
 }
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
-  
   #cards-overview {
     grid-template-columns: 1fr;
   }

@@ -1,50 +1,19 @@
-export function formatDescription(desc) {
-    if (!desc) return '';
-    desc = escapeHtml(desc);
-    desc = desc.replace(/\*\*_(.*?)_\*\*/g, '<strong><em>$1</em></strong>');
-    desc = desc.replace(/_\*\*(.*?)\*\*_ /g, '<strong><em>$1</em></strong>');
-    desc = desc.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    desc = desc.replace(/_(.*?)_/g, '<em>$1</em>');
-    const lines = desc.split('\n');
-    let inList = false;
-    let html = '';
-    lines.forEach(line => {
-        if (line.startsWith('* ')) {
-            if (!inList) {
-                html += '<ul>';
-                inList = true;
-            }
-            html += `<li>${line.substring(2)}</li>`;
-        } else {
-            if (inList) {
-                html += '</ul>';
-                inList = false;
-            }
-            if (line.trim() !== '') {
-                html += `<p>${line}</p>`;
-            }
-        }
-    });
-    if (inList) html += '</ul>';
-    return html;
-}
+import { createElement, formatDescription } from './utils.js';
 
-function escapeHtml(text) {
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+export { formatDescription }; // Re-export if needed elsewhere
 
 export function renderCards(filtered, translations, criteria, translationMap, principles) {
     const container = document.getElementById('cards-overview');
     container.innerHTML = '';
+    
     if (filtered.length === 0) {
-        container.innerHTML = '<p>No cards match the filter.</p>';
+        container.appendChild(createElement('p', {}, 'No cards match the filter.'));
         return;
     }
+
+    const fragment = document.createDocumentFragment();
+    const template = document.getElementById('card-template');
+
     filtered.forEach(([num, card]) => {
         const t = translations[num] || {};
         const c = criteria[num] || {};
@@ -60,12 +29,10 @@ export function renderCards(filtered, translations, criteria, translationMap, pr
             '3': 'understandable',
             '4': 'robust'
         }[principleNum] || '';
+        
         const principleClass = `card--${principleName}`;
-
         const level = card.level ? (translationMap.level[card.level]?.short || card.level) : '';
-
         const description = formatDescription(c.description || t.description || '');
-
 
         const roleIcons = {
             'design': 'assets/icons/pencil-ruler.svg',
@@ -81,68 +48,103 @@ export function renderCards(filtered, translations, criteria, translationMap, pr
             'speech': 'assets/icons/account-voice.svg'
         };
 
-        const roleIconsHtml = card.responsibilities ? card.responsibilities.map(role => 
-            roleIcons[role.toLowerCase()] ? 
-            `<span class="icon-wrapper"><i class="icon" style="--icon-url:url('../../${roleIcons[role.toLowerCase()]}')" aria-label="${translationMap.responsibility[role] || role}"></i></span>` : 
-            ''
-        ).join('') : '';
+        // Create Icon Fragments
+        const createIconList = (items, iconMap, labelMap) => {
+            const frag = document.createDocumentFragment();
+            if (!items) return frag;
+            
+            items.forEach(item => {
+                const key = item.toLowerCase();
+                if (iconMap[key]) {
+                    const span = createElement('span', { className: 'icon-wrapper' });
+                    const icon = createElement('i', {
+                        className: 'icon',
+                        style: { '--icon-url': `url('../../${iconMap[key]}')` },
+                        'aria-label': labelMap[item] || item
+                    });
+                    span.appendChild(icon);
+                    frag.appendChild(span);
+                }
+            });
+            return frag;
+        };
 
-        const disabilityIconsHtml = card.disabilities ? card.disabilities.map(dis => 
-            disabilityIcons[dis.toLowerCase()] ? 
-            `<span class="icon-wrapper"><i class="icon" style="--icon-url:url('../../${disabilityIcons[dis.toLowerCase()]}')" aria-label="${translationMap.disability[dis] || dis}"></i></span>` : 
-            ''
-        ).join('') : '';
+        const roleIconsFrag = createIconList(card.responsibilities, roleIcons, translationMap.responsibility);
+        const disabilityIconsFrag = createIconList(card.disabilities, disabilityIcons, translationMap.disability);
 
-        const icons = `<span class="card-icons">
-            ${roleIconsHtml}${disabilityIconsHtml}
-        </span>`;
-        
-        const themeTags = card.themes ? card.themes.map(theme => {
-            const translatedTheme = translationMap.theme[theme] || theme;
-            return `<span class="card-tag card-tag--${theme.toLowerCase()}">
-            <i class="icon"></i>
-            ${translatedTheme}
-            </span>`;
-        }).join('') : '';
-
-        let seeTogetherHtml = '';
-        if (card.seeTogether && card.seeTogether.length > 0 && translations.strings?.seeTogetherLabel) {
-            seeTogetherHtml = `<h4>${translations.strings.seeTogetherLabel}:</h4> ${card.seeTogether.join(', ')}`;
+        // Create Theme Tags Fragment
+        const themeTagsFrag = document.createDocumentFragment();
+        if (card.themes) {
+            card.themes.forEach(theme => {
+                const translatedTheme = translationMap.theme[theme] || theme;
+                const span = createElement('span', { 
+                    className: `card-tag card-tag--${theme.toLowerCase()}` 
+                }, [
+                    createElement('i', { className: 'icon' }),
+                    translatedTheme
+                ]);
+                themeTagsFrag.appendChild(span);
+            });
         }
 
-        let cardClass = `card ${principleClass}`;
-        let titleClass = 'card-title';
+        // Card Title & Obsolete status
         let cardTitle = c.title || t.title || num;
+        const clone = template.content.cloneNode(true);
+        const cardEl = clone.querySelector('.card');
+        
+        cardEl.classList.add(principleClass);
         if (card.obsolete) {
-            cardClass += ' card-obsolete';
-            titleClass += ' card-title-obsolete';
+            cardEl.classList.add('card-obsolete');
+            // We might want to add class to title, but template structure might vary
         }
 
-        // Clone card template
-        const template = document.getElementById('card-template');
-        const clone = template.content.cloneNode(true);
-
-        // Populate template with data
-        clone.querySelector('.card').classList.add(principleClass);
+        // Fill Text Content
         clone.querySelector('.principle-title').textContent = principleTitle;
         clone.querySelector('.card-level').textContent = level;
-        
         clone.querySelector('.sc-number').textContent = num;
-        clone.querySelector('.sc-name').textContent = cardTitle;
-        clone.querySelector('.sc-responsibilities').innerHTML = roleIconsHtml;
-        clone.querySelector('.sc-disabilities').innerHTML = disabilityIconsHtml;
-
-        clone.querySelector('.card-description').innerHTML = description;
         
-        clone.querySelector('.sc-see-together').innerHTML = seeTogetherHtml;
-        clone.querySelector('.sc-url').innerHTML = `
-           <h4>${translations.strings?.successCriteria || 'Success Criteria'}</h4>
-           ${c.url ? `<a href="${c.url}" target="_blank">${c.url}</a>` : ''}
-       `;
-        clone.querySelector('.sc-url-qr').setAttribute('style', '--icon-url:url(../../' + qrPath + ')');
-        clone.querySelector('.sc-themes').innerHTML = themeTags;
+        const scNameEl = clone.querySelector('.sc-name');
+        scNameEl.textContent = cardTitle;
+        if (card.obsolete) scNameEl.classList.add('card-title-obsolete');
 
-        // Append card to container
-        container.appendChild(clone);
+        // Fill HTML Content (via Fragments)
+        const rolesContainer = clone.querySelector('.sc-responsibilities');
+        rolesContainer.innerHTML = '';
+        rolesContainer.appendChild(roleIconsFrag);
+
+        const disContainer = clone.querySelector('.sc-disabilities');
+        disContainer.innerHTML = '';
+        disContainer.appendChild(disabilityIconsFrag);
+
+        // Description (keep as innerHTML since it contains formatting tags from formatDescription)
+        clone.querySelector('.card-description').innerHTML = description;
+
+        // See Together
+        const seeTogetherContainer = clone.querySelector('.sc-see-together');
+        seeTogetherContainer.innerHTML = '';
+        if (card.seeTogether && card.seeTogether.length > 0 && translations.strings?.seeTogetherLabel) {
+            seeTogetherContainer.appendChild(createElement('h4', {}, `${translations.strings.seeTogetherLabel}:`));
+            seeTogetherContainer.appendChild(document.createTextNode(' ' + card.seeTogether.join(', ')));
+        }
+
+        // URL
+        const urlContainer = clone.querySelector('.sc-url');
+        urlContainer.innerHTML = '';
+        urlContainer.appendChild(createElement('h4', {}, translations.strings?.successCriteria || 'Success Criteria'));
+        if (c.url) {
+            urlContainer.appendChild(createElement('a', { href: c.url, target: '_blank' }, c.url));
+        }
+
+        // QR Code
+        clone.querySelector('.sc-url-qr').setAttribute('style', '--icon-url:url(../../' + qrPath + ')');
+
+        // Themes
+        const themesContainer = clone.querySelector('.sc-themes');
+        themesContainer.innerHTML = '';
+        themesContainer.appendChild(themeTagsFrag);
+
+        fragment.appendChild(clone);
     });
+
+    container.appendChild(fragment);
 }
