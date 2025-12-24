@@ -1,34 +1,129 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
- * Spacing Tokens
+ * Spacing Tokens - Multi-level Custom Property Architecture
+ * 
+ * Level 1: Primitive tokens (raw spacing values)
+ * Level 2: Semantic tokens (purpose-based)
+ * Level 3: Component tokens (defined in component files)
  */
 
 :root {
-  /* Spacing scale */
-  --space-none: 0;
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-2xl: 3rem;     /* 48px */
-  --space-3xl: 4rem;     /* 64px */
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS
+   * Base spacing scale (using 4px base unit)
+   * ========================================================================== */
   
-  /* Specific layout spacing */
-  --layout-spacing-sm: var(--space-sm);
-  --layout-spacing-md: var(--space-md);
-  --layout-spacing-lg: var(--space-lg);
-  --layout-spacing-xl: var(--space-xl);
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem;  /* 2px */
+  --space-1: 0.25rem;     /* 4px */
+  --space-1-5: 0.375rem;  /* 6px */
+  --space-2: 0.5rem;      /* 8px */
+  --space-2-5: 0.625rem;  /* 10px */
+  --space-3: 0.75rem;     /* 12px */
+  --space-3-5: 0.875rem;  /* 14px */
+  --space-4: 1rem;        /* 16px */
+  --space-5: 1.25rem;     /* 20px */
+  --space-6: 1.5rem;      /* 24px */
+  --space-7: 1.75rem;     /* 28px */
+  --space-8: 2rem;        /* 32px */
+  --space-9: 2.25rem;     /* 36px */
+  --space-10: 2.5rem;     /* 40px */
+  --space-11: 2.75rem;    /* 44px */
+  --space-12: 3rem;       /* 48px */
+  --space-14: 3.5rem;     /* 56px */
+  --space-16: 4rem;       /* 64px */
+  --space-20: 5rem;       /* 80px */
+  --space-24: 6rem;       /* 96px */
   
-  /* Component specific spacing */
-  --card-spacing: var(--space-md);
-  --card-margin-bottom: var(--space-xl);
-  --card-padding: var(--space-md);
-  --card__header-padding: var(--space-md) var(--space-md) var(--space-sm);
-  --card-body-padding: 0 var(--space-md);
-  --card__footer-padding: var(--space-md);
+  /* ==========================================================================
+   * LEVEL 2: SEMANTIC TOKENS
+   * Purpose-based spacing tokens
+   * ========================================================================== */
   
-  /* Filter spacing */
-  --filter-group-spacing: var(--space-lg);
-  --filter-item-spacing: var(--space-sm);
+  /* --- Layout Spacing --- */
+  --theme-spacing-page-x: var(--space-4);
+  --theme-spacing-page-y: var(--space-6);
+  --theme-spacing-section: var(--space-8);
+  --theme-spacing-content: var(--space-6);
+  
+  /* --- Component Gaps --- */
+  --theme-gap-inline-xs: var(--space-1);
+  --theme-gap-inline-sm: var(--space-2);
+  --theme-gap-inline: var(--space-3);
+  --theme-gap-inline-lg: var(--space-4);
+  
+  --theme-gap-stack-xs: var(--space-1);
+  --theme-gap-stack-sm: var(--space-2);
+  --theme-gap-stack: var(--space-4);
+  --theme-gap-stack-lg: var(--space-6);
+  
+  /* --- Component Internal Padding --- */
+  --theme-padding-xs: var(--space-1);
+  --theme-padding-sm: var(--space-2);
+  --theme-padding: var(--space-3);
+  --theme-padding-md: var(--space-4);
+  --theme-padding-lg: var(--space-6);
+  --theme-padding-xl: var(--space-8);
+  
+  /* --- Form Elements --- */
+  --theme-input-padding-x: var(--space-3);
+  --theme-input-padding-y: var(--space-2);
+  
+  /* --- Button Padding --- */
+  --theme-button-padding-x: var(--space-4);
+  --theme-button-padding-y: var(--space-2);
+  --theme-button-padding-x-sm: var(--space-3);
+  --theme-button-padding-y-sm: var(--space-1-5);
+  
+  /* --- Grid Gutters --- */
+  --theme-grid-gap-sm: var(--space-4);
+  --theme-grid-gap: var(--space-6);
+  --theme-grid-gap-lg: var(--space-8);
+  
+  /* ==========================================================================
+   * SIZING TOKENS
+   * Component sizing values
+   * ========================================================================== */
+  
+  /* --- Icon Sizes --- */
+  --size-icon-xs: 0.75rem;   /* 12px */
+  --size-icon-sm: 1rem;      /* 16px */
+  --size-icon: 1.25rem;      /* 20px */
+  --size-icon-md: 1.5rem;    /* 24px */
+  --size-icon-lg: 2rem;      /* 32px */
+  --size-icon-xl: 2.5rem;    /* 40px */
+  
+  /* --- Touch Targets --- */
+  --size-touch-target-min: 44px;
+  --size-touch-target: 48px;
+  
+  /* --- Container Widths --- */
+  --size-container-sm: 640px;
+  --size-container-md: 768px;
+  --size-container-lg: 1024px;
+  --size-container-xl: 1280px;
+  
+  /* ==========================================================================
+   * LEGACY ALIASES (for backwards compatibility)
+   * ========================================================================== */
+  
+  --space-none: var(--space-0);
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-2xl: var(--space-12);
+  --space-3xl: var(--space-16);
+  
+  /* Legacy component spacing */
+  --card-spacing: var(--space-4);
+  --card-margin-bottom: var(--space-8);
+  --card-padding: var(--space-4);
+  --card__header-padding: var(--space-4) var(--space-4) var(--space-2);
+  --card-body-padding: 0 var(--space-4);
+  --card__footer-padding: var(--space-4);
+  --filter-group-spacing: var(--space-6);
+  --filter-item-spacing: var(--space-2);
 }

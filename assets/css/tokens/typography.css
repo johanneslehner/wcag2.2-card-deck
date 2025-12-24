@@ -1,31 +1,99 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
- * Typography Tokens
+ * Typography Tokens - Multi-level Custom Property Architecture
+ * 
+ * Level 1: Primitive tokens (raw values)
+ * Level 2: Semantic tokens (purpose-based)
+ * Level 3: Component tokens (defined in component files)
  */
 
 :root {
-  /* Font families */
-  --font-family-base: 'Segoe UI', Arial, sans-serif;
-  --font-family-headings: 'Segoe UI', Arial, sans-serif;
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS
+   * Raw typography values
+   * ========================================================================== */
   
-  /* Font sizes */
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-md: 1.125rem;   /* 18px */
-  --font-size-lg: 1.25rem;    /* 20px */
-  --font-size-xl: 1.5rem;     /* 24px */
-  --font-size-2xl: 1.75rem;   /* 28px */
-  --font-size-3xl: 2rem;      /* 32px */
+  /* --- Font Families --- */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
   
-  /* Line heights */
-  --line-height-tight: 1.2;
-  --line-height-base: 1.5;
-  --line-height-relaxed: 1.75;
+  /* --- Font Sizes (using modular scale ~1.25) --- */
+  --font-size-2xs: 0.625rem;   /* 10px */
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-md: 1.125rem;    /* 18px */
+  --font-size-lg: 1.25rem;     /* 20px */
+  --font-size-xl: 1.5rem;      /* 24px */
+  --font-size-2xl: 1.875rem;   /* 30px */
+  --font-size-3xl: 2.25rem;    /* 36px */
+  --font-size-4xl: 3rem;       /* 48px */
   
-  /* Font weights */
+  /* --- Font Weights --- */
+  --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* --- Line Heights --- */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  
+  /* --- Letter Spacing --- */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+  
+  /* ==========================================================================
+   * LEVEL 2: SEMANTIC TOKENS
+   * Purpose-based typography tokens
+   * ========================================================================== */
+  
+  /* --- Body Text --- */
+  --theme-font-family-body: var(--font-sans);
+  --theme-font-size-body: var(--font-size-base);
+  --theme-font-weight-body: var(--font-weight-normal);
+  --theme-line-height-body: var(--line-height-normal);
+  
+  /* --- Headings --- */
+  --theme-font-family-heading: var(--font-sans);
+  --theme-font-weight-heading: var(--font-weight-bold);
+  --theme-line-height-heading: var(--line-height-tight);
+  --theme-letter-spacing-heading: var(--letter-spacing-tight);
+  
+  /* --- UI Elements --- */
+  --theme-font-family-ui: var(--font-sans);
+  --theme-font-size-ui-sm: var(--font-size-sm);
+  --theme-font-size-ui: var(--font-size-base);
+  --theme-font-size-ui-lg: var(--font-size-md);
+  --theme-font-weight-ui: var(--font-weight-medium);
+  
+  /* --- Labels & Captions --- */
+  --theme-font-size-label: var(--font-size-sm);
+  --theme-font-weight-label: var(--font-weight-medium);
+  --theme-letter-spacing-label: var(--letter-spacing-wide);
+  --theme-font-size-caption: var(--font-size-xs);
+  --theme-font-weight-caption: var(--font-weight-normal);
+  
+  /* --- Code --- */
+  --theme-font-family-code: var(--font-mono);
+  --theme-font-size-code: 0.9em;
+  
+  /* ==========================================================================
+   * LEGACY ALIASES (for backwards compatibility)
+   * ========================================================================== */
+  
+  --font-family-base: var(--theme-font-family-body);
+  --font-family-headings: var(--theme-font-family-heading);
+  --line-height-base: var(--theme-line-height-body);
 }

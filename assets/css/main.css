@@ -1,12 +1,23 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
  * Main CSS Entry Point
+ * 
+ * This file imports all CSS modules in the correct order:
+ * 1. Base styles (includes token imports)
+ * 2. Component styles
  */
 
-/* Import base styles first */
+/* ==========================================================================
+ * BASE STYLES
+ * Includes: tokens, reset, typography, utilities
+ * ========================================================================== */
+
 @import 'base.css';
 
-/* Import components */
+/* ==========================================================================
+ * COMPONENT STYLES
+ * ========================================================================== */
+
 @import 'components/header.css';
 @import 'components/filters.css';
 @import 'components/cards.css';

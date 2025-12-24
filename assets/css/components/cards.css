@@ -1,258 +1,370 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
  * Cards Component
+ * 
+ * Component tokens defined at the top for easy customization
  */
 
+/* ==========================================================================
+ * LEVEL 3: COMPONENT TOKENS
+ * ========================================================================== */
 
-
-/* Helper info */
-.helper-info {
-  margin: var(--space-md) 0;
-  font-weight: var(--font-weight-bold);
+:root {
+  /* Card layout */
+  --card-min-width: 320px;
+  --card-gap: var(--space-6);
+  
+  /* Card appearance */
+  --card-radius: var(--radius-xl);
+  --card-shadow: var(--shadow-md);
+  --card-shadow-hover: var(--shadow-lg);
+  --card-transition: var(--theme-transition-all);
+  
+  /* Card sections */
+  --card-header-padding: var(--space-3) var(--space-4);
+  --card-content-padding: var(--space-6) var(--space-4);
+  --card-footer-padding: var(--space-3) var(--space-4);
+  --card-meta-padding: var(--space-3) var(--space-4);
 }
 
-/* Card container */
+/* ==========================================================================
+ * HELPER INFO
+ * ========================================================================== */
+
+.helper-info {
+  padding: var(--space-3) 0;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--theme-text-secondary);
+}
+
+/* ==========================================================================
+ * CARD GRID LAYOUT
+ * ========================================================================== */
+
 #cards-overview {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-xl);
-  margin: var(--space-md) 0;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+  gap: var(--card-gap);
+  padding: var(--space-4) 0;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
   #cards-overview {
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   }
 }
 
-/* Individual card styling */
+/* ==========================================================================
+ * CARD BASE STYLES
+ * ========================================================================== */
+
 .card {
-  border-radius: var(--radius-xl);
-  border: none;
-  box-shadow: var(--shadow-md);
-  background: var(--card-background-color, var(--color-background-primary));
-  color: var(--card__content-color, var(--color-text-primary));
-  margin-bottom: var(--card-margin-bottom);
-  font-family: var(--font-family-base);
-  overflow: hidden;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  --_card-bg: var(--card-background-color, var(--theme-bg-primary));
+  --_card-text: var(--card__content-color, var(--theme-text-inverse));
+  --_card-title: var(--card-title-color, var(--theme-text-inverse));
+  
   display: flex;
   flex-direction: column;
+  background: var(--_card-bg);
+  color: var(--_card-text);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: var(--card-transition);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--card-shadow-hover);
 }
 
-/* Card header */
+.card:focus-within {
+  box-shadow: var(--card-shadow-hover), var(--theme-focus-ring);
+}
+
+/* ==========================================================================
+ * CARD HEADER
+ * ========================================================================== */
+
 .card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
-/* Principle styling in card */
 .card__principle {
-  padding: 12px 16px;
-  border-radius: var(--radius-xl) 0 var(--radius-xl) 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  background: var(--card-principle-background-color, var(--color-wcag-principle-blue--overlay));
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-md);
-  --icon-size: 24px;
+  gap: var(--space-2);
+  padding: var(--card-header-padding);
+  padding-right: var(--space-6);
+  border-radius: var(--card-radius) 0 var(--card-radius) 0;
+  background: rgba(0, 0, 0, 0.25);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  --icon-size: var(--size-icon-md);
 }
 
-/* Level badges in card */
+.principle-title {
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+ * LEVEL BADGE
+ * ========================================================================== */
+
 .card-level {
-  width: 48px;
-  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-background-primary);
-  color: var(--color-text-primary);
-  border-radius: var(--radius-md);
-  padding: var(--space-xs) var(--space-sm);
+  min-width: 44px;
+  height: 32px;
+  margin: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  background: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-base);
-  margin: 12px 12px 0 0;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
 }
 
-/* Card main content */
-.card-main {
-  padding: var(--card-body-padding);
-  flex-grow: 1;
-}
+/* ==========================================================================
+ * CARD CONTENT
+ * ========================================================================== */
 
 .card__content {
-  flex: 1 1 100%;
-  padding: 32px 16px;
+  flex: 1;
+  padding: var(--card-content-padding);
 }
 
-/* Number and title in card */
-.card-number-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  margin-bottom: var(--space-xs);
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-/* Icons in card */
-.card-icons {
-  display: inline-flex;
-  gap: var(--space-xs);
-  vertical-align: middle;
-}
-
-/* Card footer */
-.card__footer {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.card__meta {
-  padding: 12px 16px;
-}
-.sc-themes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--color-gray-50);
-  border-top: var(--border-width-thin) solid var(--color-gray-200);
-  font-size: var(--font-size-sm);
-}
-
-/* Card description */
-.card-description {
-  margin: var(--space-md) 0;
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-relaxed);
-}
-
-/* Card title */
 .card__title {
-  color: var(--card-title-color);
-  font-size: 18px;
-  line-height: 27px;
+  margin: 0;
+  color: var(--_card-title);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
 }
+
 .card__title-overline {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-.icon-list {
-  display: inline-flex;
-  gap: 4px;
-  vertical-align: middle;
-  color: var(--card-background-color);
-}
-.icon-list .icon-wrapper {
-  display: flex;
-  padding: 4px;
-  border-radius: var(--radius-sm);
-  --icon-size: 20px;
-  background: var(--card-title-color);
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
 .sc-number {
-  font-size: 32px;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   line-height: 1;
 }
 
-/* Success criteria text */
-.card-success {
-  margin: var(--space-md) 0 var(--space-sm) 0;
-  font-size: var(--font-size-sm);
+.sc-name {
+  display: block;
+  margin-top: var(--space-2);
 }
 
-/* QR code row */
-.card-qr-row {
+/* ==========================================================================
+ * ICON LISTS (Responsibilities & Disabilities)
+ * ========================================================================== */
+
+.icon-list {
+  display: inline-flex;
+  gap: var(--space-1);
+  vertical-align: middle;
+}
+
+.icon-list .icon-wrapper {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  margin-top: var(--space-md);
+  justify-content: center;
+  padding: var(--space-1);
+  background: var(--_card-title);
+  border-radius: var(--radius-sm);
+  --icon-size: var(--size-icon);
 }
 
-/* QR code */
-.card-qr {
-  width: 64px;
-  height: 64px;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+.icon-list .icon-wrapper .icon {
+  color: var(--_card-bg);
 }
 
-/* Principle specific colors */
+/* ==========================================================================
+ * CARD DESCRIPTION
+ * ========================================================================== */
+
+.card-description {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  opacity: 0.95;
+}
+
+.card-description p {
+  margin-bottom: var(--space-3);
+}
+
+.card-description p:last-child {
+  margin-bottom: 0;
+}
+
+.card-description ul {
+  padding-left: var(--space-5);
+  list-style: disc;
+}
+
+.card-description li {
+  margin-bottom: var(--space-1);
+}
+
+/* ==========================================================================
+ * CARD FOOTER
+ * ========================================================================== */
+
+.card__footer {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+.card__meta {
+  padding: var(--card-meta-padding);
+  font-size: var(--font-size-xs);
+}
+
+.card__meta h4 {
+  margin: 0 0 var(--space-1) 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  opacity: 0.8;
+}
+
+.card__meta a {
+  color: inherit;
+  word-break: break-all;
+}
+
+.sc-see-together {
+  margin-top: var(--space-2);
+}
+
+.sc-url-qr {
+  --icon-size: 48px;
+  margin-left: auto;
+  margin-top: var(--space-2);
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+ * THEME TAGS
+ * ========================================================================== */
+
+.sc-themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--card-footer-padding);
+  background: var(--theme-bg-secondary);
+  border-top: var(--border-1) solid var(--theme-border-subtle);
+}
+
+/* ==========================================================================
+ * PRINCIPLE-SPECIFIC COLORS
+ * ========================================================================== */
+
 /* Principle 1: Perceivable */
 .card--perceivable {
-  --card-background-color: var(--color-wcag-principle-red);
-  --card-title-color: var(--color-wcag-principle-on-red);
-  --card__content-color: var(--color-wcag-principle-on-red);
+  --card-background-color: var(--wcag-principle-1-base);
+  --card-title-color: var(--wcag-principle-1-on);
+  --card__content-color: var(--wcag-principle-1-on);
   --icon-url: url('../icons/eye-off-alt.svg');
-  --card-icon-color: var(--card-background-color);
-  --card-icon-background-color: var(--card-title-color);
-  --card-qr-color: var(--card__content-color);
 }
 
 /* Principle 2: Operable */
 .card--operable {
-  --card-background-color: var(--color-wcag-principle-blue);
-  --card-title-color: var(--color-wcag-principle-on-blue);
-  --card__content-color: var(--color-wcag-principle-on-blue);
+  --card-background-color: var(--wcag-principle-2-base);
+  --card-title-color: var(--wcag-principle-2-on);
+  --card__content-color: var(--wcag-principle-2-on);
   --icon-url: url('../icons/cog.svg');
-  --card-icon-color: var(--card-background-color);
-  --card-icon-background-color: var(--card-title-color);
-  --card-qr-color: var(--card__content-color);
 }
 
 /* Principle 3: Understandable */
 .card--understandable {
-  --card-background-color: var(--color-wcag-principle-green);
-  --card-title-color: var(--color-wcag-principle-on-green);
-  --card__content-color: var(--color-wcag-principle-on-green);
+  --card-background-color: var(--wcag-principle-3-base);
+  --card-title-color: var(--wcag-principle-3-on);
+  --card__content-color: var(--wcag-principle-3-on);
   --icon-url: url('../icons/brain.svg');
-  --card-icon-color: var(--card-background-color);
-  --card-icon-background-color: var(--card-title-color);
-  --card-qr-color: var(--card__content-color);
 }
 
 /* Principle 4: Robust */
 .card--robust {
-  --card-background-color: var(--color-wcag-principle-gold);
-  --card-title-color: var(--color-wcag-principle-on-gold);
-  --card__content-color: var(--color-wcag-principle-on-gold);
+  --card-background-color: var(--wcag-principle-4-base);
+  --card-title-color: var(--wcag-principle-4-on);
+  --card__content-color: var(--wcag-principle-4-on);
   --icon-url: url('../icons/responsive.svg');
-  --card-icon-color: var(--card-background-color);
-  --card-icon-background-color: var(--card-title-color);
-  --card-qr-color: var(--card__content-color);
 }
 
-/* Obsolete card styles */
+/* ==========================================================================
+ * OBSOLETE CARD STYLES
+ * ========================================================================== */
+
 .card-obsolete {
-  opacity: 0.5;
+  opacity: 0.6;
+  filter: grayscale(0.3);
+}
+
+.card-obsolete:hover {
+  opacity: 0.8;
 }
 
 .card-title-obsolete {
   text-decoration: line-through;
+  text-decoration-thickness: 2px;
 }
 
-/* No results message */
+/* ==========================================================================
+ * NO RESULTS MESSAGE
+ * ========================================================================== */
+
 .no-results-message {
-  padding: var(--space-xl);
+  grid-column: 1 / -1;
+  padding: var(--space-8);
   text-align: center;
-  color: var(--color-red-600);
-  font-size: var(--font-size-lg);
+  color: var(--theme-text-secondary);
 }
 
-/* Back to top navigation */
+.no-results-message p {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-4);
+}
+
+.no-results-message button {
+  padding: var(--space-2) var(--space-6);
+  background: var(--theme-interactive-default);
+  color: var(--theme-text-inverse);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: var(--theme-radius-button);
+  cursor: pointer;
+  transition: var(--theme-transition-all);
+}
+
+.no-results-message button:hover {
+  background: var(--theme-interactive-hover);
+}
+
+.no-results-message button:focus-visible {
+  box-shadow: var(--theme-focus-ring);
+}
+
+/* ==========================================================================
+ * BACK TO TOP NAVIGATION
+ * ========================================================================== */
+
 .back-to-top-nav {
-  margin: var(--space-xl) 0;
+  grid-column: 1 / -1;
+  padding: var(--space-8) 0;
   text-align: center;
 }
 
@@ -263,24 +375,44 @@
 }
 
 .back-to-top-nav a {
-  display: inline-block;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-gray-100);
-  color: var(--color-text-primary);
-  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
-  transition: background var(--transition-fast);
+  border-radius: var(--theme-radius-button);
+  transition: var(--theme-transition-all);
 }
 
 .back-to-top-nav a:hover {
-  background: var(--color-gray-200);
-  text-decoration: none;
+  background: var(--color-neutral-200);
 }
 
-/* Responsive adjustments */
-@media (max-width: 900px) {
+.back-to-top-nav a:focus-visible {
+  box-shadow: var(--theme-focus-ring);
+}
+
+/* ==========================================================================
+ * RESPONSIVE ADJUSTMENTS
+ * ========================================================================== */
+
+@media (max-width: 600px) {
+  :root {
+    --card-min-width: 280px;
+  }
   
   #cards-overview {
     grid-template-columns: 1fr;
+  }
+  
+  .card__content {
+    padding: var(--space-4);
+  }
+  
+  .sc-number {
+    font-size: var(--font-size-xl);
   }
 }

@@ -1,30 +1,138 @@
 /* 
  * WCAG 2.2 Card Deck - Design System
- * Border & Effect Tokens
+ * Effects Tokens - Multi-level Custom Property Architecture
+ * 
+ * Level 1: Primitive tokens (raw values)
+ * Level 2: Semantic tokens (purpose-based)
+ * Level 3: Component tokens (defined in component files)
  */
 
 :root {
-  /* Border radius */
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS - BORDER RADIUS
+   * ========================================================================== */
+  
   --radius-none: 0;
+  --radius-xs: 2px;
   --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
   --radius-full: 9999px;
   
-  /* Border widths */
-  --border-width-thin: 1px;
-  --border-width-medium: 2px;
-  --border-width-thick: 4px;
-  --border-width-accent: 8px;
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS - BORDER WIDTHS
+   * ========================================================================== */
   
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --border-0: 0;
+  --border-1: 1px;
+  --border-2: 2px;
+  --border-3: 3px;
+  --border-4: 4px;
+  --border-8: 8px;
   
-  /* Effects */
-  --transition-fast: 0.2s;
-  --transition-medium: 0.3s;
-  --transition-slow: 0.5s;
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS - SHADOWS
+   * ========================================================================== */
+  
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  --shadow-none: none;
+  
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS - TRANSITIONS
+   * ========================================================================== */
+  
+  /* Durations */
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  
+  /* Easing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* ==========================================================================
+   * LEVEL 1: PRIMITIVE TOKENS - Z-INDEX
+   * ========================================================================== */
+  
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-overlay: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+  
+  /* ==========================================================================
+   * LEVEL 2: SEMANTIC TOKENS
+   * Purpose-based effect tokens
+   * ========================================================================== */
+  
+  /* --- Component Radius --- */
+  --theme-radius-button: var(--radius-md);
+  --theme-radius-input: var(--radius-md);
+  --theme-radius-card: var(--radius-xl);
+  --theme-radius-chip: var(--radius-full);
+  --theme-radius-badge: var(--radius-sm);
+  --theme-radius-dialog: var(--radius-xl);
+  
+  /* --- Component Shadows --- */
+  --theme-shadow-card: var(--shadow-md);
+  --theme-shadow-card-hover: var(--shadow-lg);
+  --theme-shadow-dropdown: var(--shadow-lg);
+  --theme-shadow-dialog: var(--shadow-xl);
+  --theme-shadow-button: var(--shadow-sm);
+  --theme-shadow-button-hover: var(--shadow-md);
+  
+  /* --- Focus States --- */
+  --theme-focus-ring-width: 3px;
+  --theme-focus-ring-color: rgba(33, 150, 243, 0.4);
+  --theme-focus-ring: 0 0 0 var(--theme-focus-ring-width) var(--theme-focus-ring-color);
+  --theme-focus-ring-inset: inset 0 0 0 2px var(--color-primary-500);
+  
+  /* --- Transitions --- */
+  --theme-transition-fast: var(--duration-fast) var(--ease-out);
+  --theme-transition-normal: var(--duration-normal) var(--ease-out);
+  --theme-transition-slow: var(--duration-slow) var(--ease-in-out);
+  
+  /* Common transition properties */
+  --theme-transition-colors: color var(--theme-transition-fast), 
+                             background-color var(--theme-transition-fast), 
+                             border-color var(--theme-transition-fast);
+  --theme-transition-transform: transform var(--theme-transition-fast);
+  --theme-transition-opacity: opacity var(--theme-transition-fast);
+  --theme-transition-shadow: box-shadow var(--theme-transition-fast);
+  --theme-transition-all: all var(--theme-transition-fast);
+  
+  /* --- Component Borders --- */
+  --theme-border-width: var(--border-1);
+  --theme-border-width-thick: var(--border-2);
+  
+  /* ==========================================================================
+   * LEGACY ALIASES (for backwards compatibility)
+   * ========================================================================== */
+  
+  --border-width-thin: var(--border-1);
+  --border-width-medium: var(--border-2);
+  --border-width-thick: var(--border-4);
+  --border-width-accent: var(--border-8);
+  --transition-fast: var(--duration-fast);
+  --transition-medium: var(--duration-normal);
+  --transition-slow: var(--duration-slow);
 }

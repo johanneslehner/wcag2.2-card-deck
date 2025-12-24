@@ -1,57 +1,94 @@
-/* Tags in cards */
-.card-tag {
-  display: flex;
-  gap: var(--space-xs);
-  align-items: center;
-  justify-content: center;
-  background: var(--color-tag-background, var(--color-background-primary));
-  color: var(--color-tag-content, var(--color-text-primary));
-  border-radius: var(--radius-sm);
-  padding: var(--space-xs) var(--space-sm);
-  margin-right: var(--space-xs);
-  font-size: var(--font-size-sm);
-  --icon-size: 24px;
-  font-weight: var(--font-weight-medium);
-  box-shadow: var(--shadow-sm);
+/* 
+ * WCAG 2.2 Card Deck - Design System
+ * Theme Tags Component
+ * 
+ * Tags used to display WCAG theme categories on cards
+ */
+
+/* ==========================================================================
+ * LEVEL 3: COMPONENT TOKENS
+ * ========================================================================== */
+
+:root {
+  /* Tag base */
+  --tag-padding-x: var(--space-3);
+  --tag-padding-y: var(--space-1);
+  --tag-radius: var(--radius-sm);
+  --tag-font-size: var(--font-size-xs);
+  --tag-font-weight: var(--font-weight-semibold);
+  --tag-icon-size: var(--size-icon);
+  --tag-gap: var(--space-1-5);
 }
+
+/* ==========================================================================
+ * BASE TAG STYLES
+ * ========================================================================== */
+
+.card-tag {
+  --_tag-bg: var(--color-tag-background, var(--theme-bg-tertiary));
+  --_tag-color: var(--color-tag-content, var(--theme-text-primary));
+  
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tag-gap);
+  padding: var(--tag-padding-y) var(--tag-padding-x);
+  background: var(--_tag-bg);
+  color: var(--_tag-color);
+  font-size: var(--tag-font-size);
+  font-weight: var(--tag-font-weight);
+  border-radius: var(--tag-radius);
+  white-space: nowrap;
+  --icon-size: var(--tag-icon-size);
+}
+
+/* ==========================================================================
+ * THEME-SPECIFIC TAG COLORS
+ * ========================================================================== */
 
 .card-tag--keyboard {
   --icon-url: url('../icons/keyboard.svg');
-  --color-tag-background: var(--color-wcag-theme-blue);
-  --color-tag-content: var(--color-wcag-theme-on-blue);
+  --color-tag-background: var(--wcag-theme-keyboard-bg);
+  --color-tag-content: var(--wcag-theme-keyboard-on);
 }
+
 .card-tag--zoom {
   --icon-url: url('../icons/magnify-plus.svg');
-  --color-tag-background: var(--color-wcag-theme-red);
-  --color-tag-content: var(--color-wcag-theme-on-red);
+  --color-tag-background: var(--wcag-theme-zoom-bg);
+  --color-tag-content: var(--wcag-theme-zoom-on);
 }
+
 .card-tag--code {
   --icon-url: url('../icons/code-block-tags.svg');
-  --color-tag-background: var(--color-wcag-theme-black);
-  --color-tag-content: var(--color-wcag-theme-on-black);
+  --color-tag-background: var(--wcag-theme-code-bg);
+  --color-tag-content: var(--wcag-theme-code-on);
 }
+
 .card-tag--forms {
   --icon-url: url('../icons/form-textbox-password.svg');
-  --color-tag-background: var(--color-wcag-theme-green);
-  --color-tag-content: var(--color-wcag-theme-on-green);
+  --color-tag-background: var(--wcag-theme-forms-bg);
+  --color-tag-content: var(--wcag-theme-forms-on);
 }
+
 .card-tag--sensory {
   --icon-url: url('../icons/motion-sensor.svg');
-  --color-tag-background: var(--color-wcag-theme-yellow);
-  --color-tag-content: var(--color-wcag-theme-on-yellow);
+  --color-tag-background: var(--wcag-theme-sensory-bg);
+  --color-tag-content: var(--wcag-theme-sensory-on);
 }
+
 .card-tag--gestures {
   --icon-url: url('../icons/gesture-double-tap.svg');
-  --color-tag-background: var(--color-wcag-theme-cyan);
-  --color-tag-content: var(--color-wcag-theme-on-cyan);
+  --color-tag-background: var(--wcag-theme-gestures-bg);
+  --color-tag-content: var(--wcag-theme-gestures-on);
 }
+
 .card-tag--site {
   --icon-url: url('../icons/sitemap.svg');
-  --color-tag-background: var(--color-wcag-theme-pink);
-  --color-tag-content: var(--color-wcag-theme-on-pink);
+  --color-tag-background: var(--wcag-theme-site-bg);
+  --color-tag-content: var(--wcag-theme-site-on);
 }
+
 .card-tag--wording {
   --icon-url: url('../icons/text-box.svg');
-  --color-tag-background: var(--color-wcag-theme-orange);
-  --color-tag-content: var(--color-wcag-theme-on-orange);
+  --color-tag-background: var(--wcag-theme-wording-bg);
+  --color-tag-content: var(--wcag-theme-wording-on);
 }
