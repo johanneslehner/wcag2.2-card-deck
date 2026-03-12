@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=johanneslehner&project=wcag2.2-card-deck&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 # WCAG 2.2 Card Deck  
 Last updated: *January 25, 2026 (Version 1.2)*  
 ![4 cards from the WCAG 2.2 card deck in a fan-shaped arrangement. The cards include simplified descriptions of the criteria, icons to indicate disabilities and responsibilities, as well as links and QR codes for the full description. Version 0.4 of the card deck and the Creative Commons licence CC BY-SA 4.0 are visible at the bottom.](public/images/Cover.png)  
